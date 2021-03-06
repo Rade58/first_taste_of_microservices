@@ -17,3 +17,5 @@ Allowing users to create 'posts' (short text).
 Allowing users to leave comments on them.
 
 Also number of comments will be displayed
+
+Separate service for each resource
