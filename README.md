@@ -16,10 +16,19 @@ Creating Express based project for Comments Services
 
 - `mkdir comments`
 
-# INSTALLING DEPENDANCIES INSIDE SERVICES
+# INSTALLING DEPENDANCIES INSIDE SERVICES FOLDERS
 
 - `cd posts`
 
 - `yarn init -y`
 
 - `yarn add express cors axios nodemon`
+
+- `cd ../comments`
+
+- `yarn init -y`
+
+- `yarn add express cors axios nodemon`
+
+
+
