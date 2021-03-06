@@ -8,8 +8,10 @@ ONE BRANCH IS COVERING SPECIFIC TOPIC
 
 ***
 
-I'm building this app from scatch
+I'm building this app from scatch. Even the Event Bus will be built from scratch. So this app isn't a production template; it is built for educational purposes.
 
-Even the Event Bus will be built from scratch
+# App
 
-So this app isn't a production template, it is built for educational purposes
+Allowing users to create posts.
+
+Allowing users to leave comments on them.
