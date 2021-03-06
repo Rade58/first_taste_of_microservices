@@ -10,6 +10,13 @@ Creating Express based project for Comments Services
 
 - `npx create-react-app . --template typescript`
 
+- `code package.json`
+
+```json
+      //  "start": "react-scripts start",
+      "start": "BROWSER=none && react-scripts start",,
+```
+
 # CREATING FOLDERS FOR SERVICES
 
 - `mkdir posts`
