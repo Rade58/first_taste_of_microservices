@@ -19,3 +19,15 @@ Allowing users to leave comments on them.
 Also number of comments will be displayed
 
 Separate service for each resource
+
+# Resources
+
+Posts
+
+Comments
+
+# Services
+
+Posts Service (Storing ;Retreiving all posts; giving them back to us)
+
+Comments Service (Handling comment creation; listting all comments)
