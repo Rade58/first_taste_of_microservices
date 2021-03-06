@@ -20,4 +20,6 @@ Creating Express based project for Comments Services
 
 - `cd posts`
 
+- `yarn init -y`
 
+- `yarn add express cors axios nodemon`
