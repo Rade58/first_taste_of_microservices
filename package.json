@@ -1,0 +1,21 @@
+{
+  "name": "1_first_microservices_app",
+  "version": "1.0.0",
+  "description": "***",
+  "main": "index.js",
+  "scripts": {
+    "gi": "git add -A && git commit -am '👾' && git push",
+    "g2": "git add -A && git commit -am '👾'",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rade58/first_taste_of_microservices.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Rade58/first_taste_of_microservices/issues"
+  },
+  "homepage": "https://github.com/Rade58/first_taste_of_microservices#readme"
+}
