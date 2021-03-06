@@ -12,6 +12,8 @@ I'm building this app from scatch. Even the Event Bus will be built from scratch
 
 # App
 
-Allowing users to create posts.
+Allowing users to create 'posts' (short text).
 
 Allowing users to leave comments on them.
+
+Also number of comments will be displayed
