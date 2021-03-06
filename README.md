@@ -28,6 +28,6 @@ Comments
 
 # Services
 
-Posts Service (Storing ;Retreiving all posts; giving them back to us)
+Posts Service (Creating post ,Retreiving all posts and giving them back to us)
 
 Comments Service (Handling comment creation; listting all comments)
