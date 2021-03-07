@@ -1,11 +1,13 @@
 const express = require("express");
 const { json, urlencoded } = require("body-parser");
 const { randomBytes } = require("crypto");
+const cors = require("cors");
 
 const app = express();
 
+app.use(cors());
 app.use(json());
-// app.use(urlencoded({ extended: true }));
+app.use(urlencoded({ extended: true }));
 
 // ANOTHER IN MEMORY DATABASE
 //
