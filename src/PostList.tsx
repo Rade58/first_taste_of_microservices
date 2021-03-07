@@ -1,16 +1,8 @@
-import React, {
-  FC,
-  ReactElement,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import React, { FC, useCallback, useEffect, useState } from "react";
 import axios from "axios";
 
 const PostList: FC = () => {
-  const [posts, setPosts] = useState<{
-    [key: string]: { title: string; id: string };
-  }>({});
+  const [posts, setPosts] = useState<{ title: string; id: string }[]>([]);
 
   const getPostsCallback = useCallback(async () => {
     const res = await axios.get("http://localhost:4000/posts", {
@@ -21,7 +13,14 @@ const PostList: FC = () => {
     debugger;
     const posts: { [key: string]: { title: string; id: string } } = res.data;
 
-    setPosts(posts);
+    // normalization
+    const normalizedPosts = [];
+
+    for (const key in posts) {
+      normalizedPosts.push(posts[key]);
+    }
+
+    setPosts(normalizedPosts);
   }, [setPosts]);
 
   useEffect(() => {
@@ -30,17 +29,9 @@ const PostList: FC = () => {
 
   return (
     <div>
-      {() => {
-        const postElements: ReactElement[] = [];
-
-        for (const post in posts) {
-          postElements.push(
-            <div key={posts[post].id}>{posts[post].title}</div>
-          );
-        }
-
-        return postElements;
-      }}
+      {posts.map(({ id, title }) => (
+        <div key={id}>{title}</div>
+      ))}
     </div>
   );
 };
