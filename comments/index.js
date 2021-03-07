@@ -28,22 +28,34 @@ app.get("/posts/:id/comments", (req, res) => {
 });
 
 app.post("/posts/:id/comments", (req, res) => {
+  console.log(req.params, req.body);
+
   const { id: postId } = req.params;
 
   const { content } = req.body;
 
   const id = randomBytes(4).toString("hex");
 
-  commentsByPostId[postId] = {
-    id: postId,
-    comments: [...commentsByPostId[postId], { id, content }],
-  };
+  // IF POST EXISTING (IF YOU STORED COMMENTS BEFORE)
 
-  res
-    .status(201)
-    .send(
-      commentsByPostId[postId].comments[commentsByPostId[postId].length - 1]
-    );
+  if (commentsByPostId[postId]) {
+    commentsByPostId[postId].comments.push({
+      content,
+      id,
+    });
+  } else {
+    commentsByPostId[postId] = {
+      id: postId,
+      comments: [
+        {
+          id,
+          content,
+        },
+      ],
+    };
+  }
+
+  res.status(201).send({ id, content });
 });
 
 const port = 4001;
