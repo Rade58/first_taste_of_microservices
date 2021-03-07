@@ -6,7 +6,15 @@ Express server built inside /posts
 
 ## STARTING SERVER 
 
+- `cd posts`
+
 - `npx nodemon index.js`
+
+OR
+
+- `cd posts`
+
+- `yarn start`
 
 ## USING `httpie` TO SEND REQUESTS FROM COMMAND LINE
 
