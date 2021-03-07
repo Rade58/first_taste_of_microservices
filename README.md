@@ -11,3 +11,4 @@ Express server built inside /posts
 
 - `npx nodemon index.js`
 
+## USING `httpie` TO SEND REQUESTS FROM COMMAND LINE
