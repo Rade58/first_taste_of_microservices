@@ -4,6 +4,10 @@ const { randomBytes } = require("crypto");
 
 const app = express();
 
+// MIDDLEWARES
+app.use(bodyParser({}));
+//
+
 // FAKE IN MEMORY DATBASE
 // IT WILLL BE DESTROYED WHEN YOU RESTART SERVER
 const posts = { "placeholder id": "foo bar baz" };
