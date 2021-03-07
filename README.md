@@ -71,7 +71,7 @@ const PostCreate: FC = () => {
 export default PostCreate;
 ```
 
-## ALLOWING CORS IN Posts SERVICES
+## ALLOWING CORS IN Posts SERVICES (YOU CAN DO THIS FOR Comments SERVICES TOO)
 
 - `cd posts`
 
@@ -123,5 +123,5 @@ app.listen(port, () => {
 
 - `cd posts` `yarn start`
 
-
+AND CREATING POSTS BY USING UI
 
