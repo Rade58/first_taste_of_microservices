@@ -2,8 +2,6 @@ const express = require("express");
 const { json, urlencoded } = require("body-parser");
 const { randomBytes } = require("crypto");
 
-console.log("SERVER SERVER SERVER");
-
 const app = express();
 
 app.use(json());
@@ -25,13 +23,20 @@ const commentsByPostId = {
   },
 };
 
-app.get("/blah", (req, res) => {
+app.get("/posts/:id/comments", (req, res) => {
+  const { id: postId } = req.params;
+
+  if (commentsByPostId[postId]) {
+    res.status(200).send(commentsByPostId[postId]);
+  } else {
+    res.status(404).end();
+  }
+
   //
-  res.status(200).send({ test });
 });
 
 app.post("/posts/:id/comments", (req, res) => {
-  // console.log(req.params, req.body);
+  console.log(req.params, req.body);
 
   const { id: postId } = req.params;
 
@@ -64,10 +69,8 @@ app.post("/posts/:id/comments", (req, res) => {
   res.status(201).send({ id, content });
 });
 
-const port = 5001;
+const port = 4001;
 
 app.listen(port, () => {
   console.log(`Comments service on: http://localhost:${port}`);
-
-  console.log("SERVER SERVER SERVER");
 });
