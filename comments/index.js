@@ -36,7 +36,8 @@ app.post("/posts/:id/comments", (req, res) => {
 
   const id = randomBytes(4).toString("hex");
 
-  // IF POST EXISTING (IF YOU STORED COMMENTS BEFORE)
+  // IF POST EXISTING (IF YOU STORED COMMENTS BEFORE, YOU HAVE EXISTING
+  // ARRAY OF COMMENTS)
 
   if (commentsByPostId[postId]) {
     commentsByPostId[postId].comments.push({
@@ -44,8 +45,9 @@ app.post("/posts/:id/comments", (req, res) => {
       id,
     });
   } else {
+    // STORING FIRST EVER COMMENT
     commentsByPostId[postId] = {
-      id: postId,
+      postId,
       comments: [
         {
           id,
@@ -55,6 +57,7 @@ app.post("/posts/:id/comments", (req, res) => {
     };
   }
 
+  // SENDING CREATED COMMENT
   res.status(201).send({ id, content });
 });
 
