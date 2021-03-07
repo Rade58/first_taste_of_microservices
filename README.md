@@ -16,10 +16,6 @@ OR
 
 - `yarn start`
 
-## USING `httpie` TO SEND REQUESTS FROM COMMAND LINE
-
-<https://httpie.io/docs#usage>
-
 
 ## CODE
 
@@ -63,3 +59,13 @@ app.listen(port, () => {
 });
 
 ```
+
+## TESTING SERVICE MANUALLY
+
+USING `httpie` TO SEND REQUESTS FROM COMMAND LINE
+
+<https://httpie.io/docs#usage>
+
+OR YOU CAN USE `INSOMNIA`
+
+<https://insomnia.rest/>
