@@ -75,9 +75,9 @@ OR YOU CAN USE `INSOMNIA`
 
 GET
 
-- `http GET :4000/posts`
+- `http GET :4000/posts Content-Type:application/json`
 
 POST
 
-- `http -f POST :4000/posts title="Stavros going to market"`
+- `http POST :4000/posts Content-Type:application/json title="Stavros going to market"`
 
