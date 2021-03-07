@@ -6,7 +6,7 @@ const app = express();
 
 // FAKE IN MEMORY DATBASE
 // IT WILLL BE DESTROYED WHEN YOU RESTART SERVER
-const posts = { placeholder: "something blah" };
+const posts = { "placeholder id": "foo bar baz" };
 //
 
 app.get("/posts", (req, res) => {
