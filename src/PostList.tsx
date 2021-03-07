@@ -10,7 +10,7 @@ const PostList: FC = () => {
         "Content-Type": "application/json",
       },
     });
-    debugger;
+
     const posts: { [key: string]: { title: string; id: string } } = res.data;
 
     // normalization
