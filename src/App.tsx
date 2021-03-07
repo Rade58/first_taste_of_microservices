@@ -4,7 +4,7 @@ import PostCreate from "./PostCreate";
 
 const App: FC = () => {
   return (
-    <div>
+    <div className="container">
       <h1>Create Post</h1>
       <PostCreate />
     </div>
