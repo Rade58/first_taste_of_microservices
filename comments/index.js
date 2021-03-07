@@ -2,10 +2,12 @@ const express = require("express");
 const { json, urlencoded } = require("body-parser");
 const { randomBytes } = require("crypto");
 
+console.log("SERVER SERVER SERVER");
+
 const app = express();
 
 app.use(json());
-app.use(urlencoded({ extended: true }));
+// app.use(urlencoded({ extended: true }));
 
 // ANOTHER IN MEMORY DATABASE
 //
@@ -23,8 +25,9 @@ const commentsByPostId = {
   },
 };
 
-app.get("/posts/:id/comments", (req, res) => {
+app.get("/blah", (req, res) => {
   //
+  res.status(200).send({ test });
 });
 
 app.post("/posts/:id/comments", (req, res) => {
@@ -61,8 +64,10 @@ app.post("/posts/:id/comments", (req, res) => {
   res.status(201).send({ id, content });
 });
 
-const port = 4001;
+const port = 5001;
 
-app.listen(() => {
+app.listen(port, () => {
   console.log(`Comments service on: http://localhost:${port}`);
+
+  console.log("SERVER SERVER SERVER");
 });
