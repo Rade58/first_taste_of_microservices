@@ -17,6 +17,8 @@ Creating Express based project for Comments Services
       "start": "BROWSER=none && react-scripts start",,
 ```
 
+ADDING SOME DEV DEPENDANCIES (MOSTLY ESLINT RELATED): 
+
 `yarn add eslint prettier eslint-config-prettier eslint-plugin-import eslint-plugin-jsx-a11y eslint-plugin-react eslint-plugin-react-hooks @typescript-eslint/eslint-plugin @typescript-eslint/parser --dev`
 
 # CREATING FOLDERS FOR SERVICES
