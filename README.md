@@ -106,3 +106,13 @@ app.listen(port, () => {
   console.log(`Comments service on: http://localhost:${port}`);
 });
 ```
+
+# MANUALLY TESTING Comments SERVICE
+
+GETTING COMMENTS
+
+- `http GET :4001/posts/{post id goes here without curly brackets}/comments Content-Type:application/json`
+
+CREATING COMMENTS
+
+- `http POST :4001/posts/{post id}/comments Content-Type:application/json content="Hello It's me. I'm Stavros"`
