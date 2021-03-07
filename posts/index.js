@@ -1,20 +1,19 @@
 const express = require("express");
 const { json, urlencoded } = require("body-parser");
 const { randomBytes } = require("crypto");
+// IMPORTED THIS
 const cors = require("cors");
+//
 
 const app = express();
 
-// MIDDLEWARES
+// ADD CORS
 app.use(cors());
+//
 app.use(json());
 app.use(urlencoded({ extended: true }));
-//
 
-// FAKE IN MEMORY DATBASE
-// IT WILLL BE DESTROYED WHEN YOU RESTART SERVER
 const posts = { "placeholder id": "foo bar baz" };
-//
 
 app.get("/posts", (req, res) => {
   res.status(200).send(posts);
