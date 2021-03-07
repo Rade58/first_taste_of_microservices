@@ -1,39 +1,11 @@
-# REACT PROJECT SETUP
+# POST CREATE COMPONENT
 
-1) POST CREATION FORM
+WILL BE USING BOOTSTRAP FOR STYLING
 
-2) LIST OF POSTS
+WILL LOAD IT FROM CDN
 
-3) COMMENTS FORM ON POST
+<https://getbootstrap.com/docs/5.0/getting-started/download/#cdn-via-jsdelivr>
 
-4) COMMENT LISTI ON POST
+LINK TAG WILL BE PLACED IN `public/index.html` HEAD SECTION (**DON'T PASTE SCRIPT TAG**)
 
-## WILL BE USING axios FOR NETWORK REQUESTS
 
-- `yarn add axios`
-
-# SETUP
-
-- `touch src/App.tsx`
-
-```tsx
-import React, { FC } from "react";
-
-const App: FC = () => {
-  return <div>Blog App!</div>;
-};
-
-export default App;
-
-```
-
-- `touch src/index.tsx`
-
-```tsx
-import React from "react";
-import ReactDom from "react-dom";
-
-import App from "./App";
-
-ReactDom.render(<App />, document.getElementById("root"));
-```
