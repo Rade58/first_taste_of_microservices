@@ -7,3 +7,7 @@ You can check the code by yourself
 Express server built inside /posts
 
 
+## STARTING SERVER
+
+- `npx nodemon index.js`
+
