@@ -69,3 +69,15 @@ USING `httpie` TO SEND REQUESTS FROM COMMAND LINE
 OR YOU CAN USE `INSOMNIA`
 
 <https://insomnia.rest/>
+
+
+## httpie
+
+GET
+
+- `http GET :4000/posts`
+
+POST
+
+- `http -f POST :4000/posts title="Stavros going to market"`
+
