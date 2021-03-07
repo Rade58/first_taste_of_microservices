@@ -109,6 +109,8 @@ app.listen(port, () => {
 
 # MANUALLY TESTING Comments SERVICE
 
+- `yarn start`
+
 GETTING COMMENTS
 
 - `http GET :4001/posts/{post id goes here without curly brackets}/comments Content-Type:application/json`
