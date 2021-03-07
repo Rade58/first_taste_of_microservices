@@ -13,7 +13,7 @@ app.use(cors());
 app.use(json());
 app.use(urlencoded({ extended: true }));
 
-const posts = { "placeholder id": "foo bar baz" };
+const posts = { someid: { id: "someid", title: "foo bar baz" } };
 
 app.get("/posts", (req, res) => {
   res.status(200).send(posts);
