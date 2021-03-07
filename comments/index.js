@@ -31,7 +31,7 @@ app.get("/blah", (req, res) => {
 });
 
 app.post("/posts/:id/comments", (req, res) => {
-  console.log(req.params, req.body);
+  // console.log(req.params, req.body);
 
   const { id: postId } = req.params;
 
