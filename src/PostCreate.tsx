@@ -23,7 +23,10 @@ const PostCreate: FC = () => {
   return (
     <div>
       <form
-        onSubmit={() => {
+        // INSTEAD OF #  YOU USED e.preventDefault
+        // action="#"
+        onSubmit={(e) => {
+          e.preventDefault();
           submitCallback();
         }}
       >
