@@ -44,6 +44,7 @@ const PostCreate: FC = () => {
         onSubmit={(e) => {
           e.preventDefault();
           submitCallback();
+          setTitle("");
         }}
       >
         <div className="form-group">
