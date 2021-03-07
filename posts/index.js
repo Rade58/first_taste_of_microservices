@@ -1,11 +1,12 @@
 const express = require("express");
-const bodyParser = require("body-parser");
+const { json, urlencoded } = require("body-parser");
 const { randomBytes } = require("crypto");
 
 const app = express();
 
 // MIDDLEWARES
-app.use(bodyParser({}));
+app.use(json());
+app.use(urlencoded({ extended: true }));
 //
 
 // FAKE IN MEMORY DATBASE
