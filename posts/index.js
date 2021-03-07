@@ -2,8 +2,6 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const { randomBytes } = require("crypto");
 
-console.log(bodyParser);
-
 const app = express();
 
 // FAKE IN MEMORY DATBASE
@@ -12,24 +10,17 @@ const posts = { placeholder: "something blah" };
 //
 
 app.get("/posts", (req, res) => {
-  //
-
   res.status(200).send(posts);
 });
 
 app.post("/posts", (req, res) => {
-  //
-  // const { title } = req.body;
+  const { title } = req.body;
 
-  console.log(req.body);
-
-  res.send({ body: req.body });
-
-  /* const id = randomBytes(4).toString("hex");
+  const id = randomBytes(4).toString("hex");
 
   posts[id] = { id, title };
 
-  res.status(201).send(posts[id]); */
+  res.status(201).send(posts[id]);
 });
 
 const port = 4000;
