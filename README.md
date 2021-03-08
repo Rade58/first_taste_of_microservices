@@ -109,3 +109,14 @@ export default PostList;
 
 ```
 
+## MANUAL TEST
+
+JUST CREATE FEW POST WITH A FORM
+
+- `yarn start`
+
+- `cd posts` `yarn start`
+
+YOU CAN CREATE POSTS
+
+REALOAD, AND NEW POST IS DISPLAYED WITH OLD ONES
