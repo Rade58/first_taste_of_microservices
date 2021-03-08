@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useEffect, useState } from "react";
 import axios from "axios";
 
-const CommentCreate: FC<{ postId: string }> = ({ postId }) => {
+const CommentList: FC<{ postId: string }> = ({ postId }) => {
   const [comments, setComments] = useState<{ id: string; content: string }[]>(
     []
   );
@@ -35,11 +35,11 @@ const CommentCreate: FC<{ postId: string }> = ({ postId }) => {
     <div>
       {comments.map(({ id, content }) => (
         <div key={id}>
-          <h4>{content}</h4>
+          <p>{content}</p>
         </div>
       ))}
     </div>
   );
 };
 
-export default CommentCreate;
+export default CommentList;

@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useState } from "react";
 import axios from "axios";
 
-const CreateComment: FC<{ postId: string }> = ({ postId }) => {
+const CommentCreate: FC<{ postId: string }> = ({ postId }) => {
   const [content, setContent] = useState<string>("");
 
   const createNewCommentForPost = useCallback(async () => {
@@ -46,4 +46,4 @@ const CreateComment: FC<{ postId: string }> = ({ postId }) => {
   );
 };
 
-export default CreateComment;
+export default CommentCreate;

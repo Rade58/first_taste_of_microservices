@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useEffect, useState } from "react";
 import axios from "axios";
 
-import CreateComment from "./CreateComment";
+import CommentCreate from "./CommentCreate";
 
 import CommentList from "./CommentList";
 
@@ -38,7 +38,7 @@ const PostList: FC = () => {
         >
           <div className="card-body">
             <h3>{title}</h3>
-            <CreateComment postId={id} />
+            <CommentCreate postId={id} />
             <CommentList postId={id} />
           </div>
         </div>
