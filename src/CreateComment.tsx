@@ -20,16 +20,20 @@ const CreateComment: FC<{ postId: string }> = ({ postId }) => {
           createNewCommentForPost();
         }}
       >
-        <h4>Add Comment</h4>
-        <input
-          type="text"
-          value={content}
-          onChange={(e) => {
-            setContent(e.target.value);
-          }}
-        />
-        {/* -------- -------- */}
-        {/* -------- -------- */}
+        <div className="form-group">
+          <label>
+            New Comment
+            <input
+              className="form-control"
+              type="text"
+              value={content}
+              onChange={(e) => {
+                setContent(e.target.value);
+              }}
+            />
+          </label>
+        </div>
+        <button className="btn btn-primary">Submit</button>
       </form>
     </div>
   );

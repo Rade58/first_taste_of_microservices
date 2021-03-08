@@ -31,7 +31,15 @@ const CommentCreate: FC<{ postId: string }> = ({ postId }) => {
     getCommentsByPostIdCallback();
   }, []);
 
-  return null;
+  return (
+    <div>
+      {comments.map(({ id, content }) => (
+        <div key={id}>
+          <h4>{content}</h4>
+        </div>
+      ))}
+    </div>
+  );
 };
 
 export default CommentCreate;
