@@ -6,11 +6,17 @@ const CreateComment: FC<{ postId: string }> = ({ postId }) => {
 
   const createNewCommentForPost = useCallback(async () => {
     const res = await axios.post(
-      `http://localhost:4001/posts/${postId}/comments`
+      `http://localhost:4001/posts/${postId}/comments`,
+      { content },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
     );
 
-    const newPost = res.data;
-  }, []);
+    const newComment = res.data;
+  }, [content]);
 
   return (
     <div>
@@ -18,6 +24,7 @@ const CreateComment: FC<{ postId: string }> = ({ postId }) => {
         onSubmit={(e) => {
           e.preventDefault();
           createNewCommentForPost();
+          setContent("");
         }}
       >
         <div className="form-group">
