@@ -13,14 +13,22 @@ const PostList: FC = () => {
 
     const posts: { [key: string]: { title: string; id: string } } = res.data;
 
+    /* // INSTEAD OF THIS
     // normalization
     const normalizedPosts = [];
 
     for (const key in posts) {
       normalizedPosts.push(posts[key]);
-    }
+    } */
+
+    // setPosts(normalizedPosts);
+
+    // DO THIS
+
+    const normalizedPosts = Object.values(posts);
 
     setPosts(normalizedPosts);
+    //
   }, [setPosts]);
 
   useEffect(() => {
