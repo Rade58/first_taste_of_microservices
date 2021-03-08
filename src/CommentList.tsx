@@ -36,13 +36,11 @@ const CommentList: FC<{ postId: string }> = ({ postId }) => {
   }, []);
 
   return (
-    <div>
+    <ul>
       {comments.map(({ id, content }) => (
-        <div key={id}>
-          <p>{content}</p>
-        </div>
+        <li key={id}>{content}</li>
       ))}
-    </div>
+    </ul>
   );
 };
 
