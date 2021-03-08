@@ -7,23 +7,27 @@ const CommentList: FC<{ postId: string }> = ({ postId }) => {
   );
 
   const getCommentsByPostIdCallback = useCallback(async () => {
-    const res = await axios.get(
-      `http://localhost:4001/posts/${postId}/comments`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    try {
+      const res = await axios.get(
+        `http://localhost:4001/posts/${postId}/comments`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-    const data: {
-      id: string;
-      comments: { id: string; content: string }[];
-    } = res.data;
+      const data: {
+        id: string;
+        comments: { id: string; content: string }[];
+      } = res.data;
 
-    // console.log({ data });
+      console.log({ data });
 
-    setComments(data.comments);
+      setComments(data.comments);
+    } catch (error) {
+      console.log(error, `no commoents for post id: ${postId}`);
+    }
     //
   }, [setComments]);
 
