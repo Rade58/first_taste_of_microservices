@@ -22,11 +22,20 @@ const PostList: FC = () => {
     getPostsCallback();
   }, [getPostsCallback]);
 
-  // ADDING CLASSES HERE
+  // ADDING BOOTSTRAP CLASSES, CHANGING TAGS A BIT
+  // ADDING SOME STYLES
   return (
-    <div className="">
+    <div>
       {posts.map(({ id, title }) => (
-        <div key={id}>{title}</div>
+        <div
+          key={id}
+          className="card d-flex flex-row flex-wrap justify-content-between"
+          style={{ width: "30%", marginBottom: "20px" }}
+        >
+          <div className="card-body">
+            <h3>{title}</h3>
+          </div>
+        </div>
       ))}
     </div>
   );
