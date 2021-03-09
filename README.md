@@ -6,6 +6,8 @@ BRANCHES ARE LIKE TIMELINE
 
 ONE BRANCH IS COVERING SPECIFIC TOPIC
 
+START AT: <https://github.com/Rade58/first_taste_of_microservices/tree/0_INTRO>
+
 ***
 
 I'm building this app from scatch. Even the Event Bus will be built from scratch. So this app isn't a production template; it is built for educational purposes.
