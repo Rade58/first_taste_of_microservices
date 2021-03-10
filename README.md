@@ -154,6 +154,7 @@ app.post("/posts/:id/comments", async (req, res) => {
     const response = await axios.post("http://localhost:4005/events", {
       type: "CommentCreated",
       payload: {
+        // DON'T FORGET postId
         postId,
         id,
         content,
@@ -172,3 +173,4 @@ app.listen(port, () => {
   console.log(`Comments service on: http://localhost:${port}`);
 });
 ```
+
