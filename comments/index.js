@@ -78,7 +78,7 @@ app.post("/posts/:id/comments", async (req, res) => {
       },
     });
   } catch (err) {
-    console.err(err, "Couldn't send an event");
+    console.error(err, "Couldn't send an event");
   }
 
   res.status(201).send({ id, content });
