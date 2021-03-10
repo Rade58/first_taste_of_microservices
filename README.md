@@ -35,7 +35,7 @@ app.get("/posts", async (req, res) => {
 // SO THIS IS GOING TO BE A HANDLER FOR ANTICAPATING
 // EVERY EVENT SENT BY EVENT BUS
 app.post("/posts", async (req, res) => {
-  //
+  // I'LL LEAVE THIS EMPTY FOR NOW
 });
 
 const port = 4002;
@@ -43,5 +43,19 @@ const port = 4002;
 app.listen(port, () => {
   console.log(`Query Service on: http://localhost:${port}`);
 });
+
 ```
+
+FOR NOW, YOU CAN JUST TEST IT IF IT WORKS
+
+- `cd query`
+
+- `yarn start`
+
+SERVER WORKS, IT IS UP AND RUNNING
+
+
+
+
+
 
