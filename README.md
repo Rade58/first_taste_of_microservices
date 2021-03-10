@@ -6,10 +6,9 @@
 
 - `yarn init -y`
 
-- `s`
+- `yarn add express cors`
 
 - `touch index.js`
-
 
 ```js
 
