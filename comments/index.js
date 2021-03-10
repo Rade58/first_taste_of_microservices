@@ -38,17 +38,16 @@ app.get("/posts/:id/comments", (req, res) => {
   //
 });
 
-app.post("/posts/:id/comments", (req, res) => {
-  console.log(req.params, req.body);
+// I WILL SEND EVENT TO THE EVENT BUS
+// AN EVENT THAT INDICATES THAT NEW COMMENT IS CREATED
+// AND ALSO SENDS THAT COMMENT IN A PAYLOAD
 
+app.post("/posts/:id/comments", async (req, res) => {
   const { id: postId } = req.params;
 
   const { content } = req.body;
 
   const id = randomBytes(4).toString("hex");
-
-  // IF POST EXISTING (IF YOU STORED COMMENTS BEFORE, YOU HAVE EXISTING
-  // ARRAY OF COMMENTS)
 
   if (commentsByPostId[postId]) {
     commentsByPostId[postId].comments.push({
@@ -56,7 +55,6 @@ app.post("/posts/:id/comments", (req, res) => {
       id,
     });
   } else {
-    // STORING FIRST EVER COMMENT
     commentsByPostId[postId] = {
       postId,
       comments: [
@@ -68,7 +66,21 @@ app.post("/posts/:id/comments", (req, res) => {
     };
   }
 
-  // SENDING CREATED COMMENT
+  // SENDING EVENT FROM HERE BECAUSE
+  // HERE I KNOW THAT COMMENT IS CREATED (JOB OF CREATION IS ALREDY FINISHED HERE)
+  try {
+    const response = await axios.post("http://localhost:4005/events", {
+      type: "CommentCreated",
+      payload: {
+        postId,
+        id,
+        content,
+      },
+    });
+  } catch (err) {
+    console.err(err, "Couldn't send an event");
+  }
+
   res.status(201).send({ id, content });
 });
 
