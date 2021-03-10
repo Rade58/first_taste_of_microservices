@@ -22,13 +22,12 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# SERVICES AND EVENT BUS
 # posts
-
 posts/node_modules
-
 # comments
-
 comments/node_modules
-
 # event bus
 event_bus/node_modules
+# query
+query/node_modules
