@@ -6,7 +6,7 @@
 
 - `yarn init -y`
 
-- `yarn add express cors`
+- `yarn add express cors nodemon`
 
 - `code package.json`
 
@@ -18,7 +18,7 @@
 - `touch index.js`
 
 ```js
-const express = require("expres");
+const express = require("express");
 const cors = require("cors");
 const { json } = require("body-parser");
 

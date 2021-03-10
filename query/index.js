@@ -1,4 +1,4 @@
-const express = require("expres");
+const express = require("express");
 const cors = require("cors");
 const { json } = require("body-parser");
 
@@ -15,7 +15,7 @@ app.get("/posts", async (req, res) => {
 // SO THIS IS GOING TO BE A HANDLER FOR ANTICAPATING
 // EVERY EVENT SENT BY EVENT BUS
 app.post("/posts", async (req, res) => {
-  //
+  // I'LL LEAVE THIS EMPTY FOR NOW
 });
 
 const port = 4002;
