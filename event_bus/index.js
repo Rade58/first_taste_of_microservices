@@ -27,7 +27,10 @@ const sendNotification = async (url, event) => {
 app.post("/events", async (req, res) => {
   const event = req.body;
 
-  Promise.race([
+  // INSTEAD OF MULTIPLE try catch BLOCKS I AM USING
+  // Promise.all
+
+  await Promise.all([
     sendNotification("http://localhost:4000/events", event),
     sendNotification("http://localhost:4001/events", event),
     sendNotification("http://localhost:4002/events", event),
