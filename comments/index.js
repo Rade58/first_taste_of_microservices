@@ -2,10 +2,7 @@ const express = require("express");
 const { json, urlencoded } = require("body-parser");
 const { randomBytes } = require("crypto");
 const cors = require("cors");
-
-// TAKING axios
 const axios = require("axios");
-//
 
 const app = express();
 
@@ -25,6 +22,21 @@ const commentsByPostId = {
     ],
   },
 };
+
+// ADDING /events HANDLER
+
+app.post("/events", async (req, res) => {
+  const { type, payload } = req.body;
+
+  console.log({ type, payload });
+
+  // BECAUSE COMMENT SERVICE ALREDY KNOWS THAT COMMENT IS CREATED
+  if (type === "CommentCreated") {
+    return res.end();
+  }
+});
+
+// -----------------------------
 
 app.get("/posts/:id/comments", (req, res) => {
   const { id: postId } = req.params;
