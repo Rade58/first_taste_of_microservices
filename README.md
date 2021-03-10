@@ -29,6 +29,8 @@ app.post("/events", async (req, res) => {
 
   // SENDING NOTIFICATIONS TO ALL SERVICES
 
+  // YOU CAN USE TER ECHOING TO SERVICES
+
   // TO POSTS SERVICE
   try {
     const response = await axios.post("http://localhost/4000/events", event);
