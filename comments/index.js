@@ -28,6 +28,7 @@ const commentsByPostId = {
 app.post("/events", async (req, res) => {
   const { type, payload } = req.body;
 
+  // I WILL JUST CONSOLE LOG STUFF FOR NOW
   console.log({ type, payload });
 
   // BECAUSE COMMENT SERVICE ALREDY KNOWS THAT COMMENT IS CREATED

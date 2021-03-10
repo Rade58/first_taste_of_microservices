@@ -16,6 +16,9 @@ const posts = { someid: { id: "someid", title: "foo bar baz" } };
 app.post("/events", async (req, res) => {
   const { type, payload } = req.body;
 
+  // I WILL JUST CONSOLE LOG STUFF FOR NOW
+  console.log({ type, payload });
+
   // BECAUSE POST SERVICE ALREDY KNOWS THAT POST IS CREATED
   if (type === "PostCreated") {
     return res.end();
