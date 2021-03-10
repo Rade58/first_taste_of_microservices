@@ -250,7 +250,7 @@ app.listen(port, () => {
 
 ```
 
-## TESTING ALL /events ROUTES
+## TESTING ALL `/events` ROUTES
 
 - `yarn start`
 
