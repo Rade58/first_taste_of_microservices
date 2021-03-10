@@ -9,36 +9,32 @@ app.use(cors());
 app.use(json());
 app.use(urlencoded({ extended: true }));
 
+// -------- I WILL ADD THIS REUSABLE FUNCTION --------
+
+const sendNotification = async (url, event) => {
+  try {
+    const response = await axios.post(url, event);
+
+    return response;
+  } catch (error) {
+    console.log(error);
+    return "Error";
+  }
+};
+
+// ---------------------------------------------
+
 app.post("/events", async (req, res) => {
-  // TAKING EVENT
   const event = req.body;
 
-  // SENDING NOTIFICATIONS TO ALL SERVICES
+  Promise.race([
+    sendNotification("http://localhost:4000/events", event),
+    sendNotification("http://localhost:4001/events", event),
+    sendNotification("http://localhost:4002/events", event),
+  ]).catch((error) => {
+    console.log(error);
+  });
 
-  // TO POSTS SERVICE
-  try {
-    console.log("SENDING TO POST SERVICE");
-    await axios.post("http://localhost:4000/events", event);
-  } catch (err) {
-    console.log("Something Happened post");
-  }
-
-  // TO COMMENTS SERVICE
-  try {
-    console.log("SENDING TO COMMENT SERVICE");
-    await axios.post("http://localhost:4001/events", event);
-  } catch (err) {
-    console.log("Something Happened comment");
-  }
-  // TO QUERY SERVICE
-  try {
-    console.log("SENDING TO QUERY SERVICE");
-    await axios.post("http://localhost:4002/events", event);
-  } catch (err) {
-    console.log("Something Happened query");
-  }
-
-  // JUST TO INDICATE THAT EVERYTHING IS WORKING AS EXPECTED
   res.send({ status: "OK" });
 });
 
