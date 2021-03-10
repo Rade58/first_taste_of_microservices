@@ -29,3 +29,6 @@ posts/node_modules
 # comments
 
 comments/node_modules
+
+# event bus
+event_bus/node_modules
