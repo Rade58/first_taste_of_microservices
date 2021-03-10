@@ -1,21 +1,23 @@
-# BASIC EVENT BUS IMPLEMENTTION
+# SENDING EVENTS TO EVENT BUS
 
-- `mkdir event_bus`
+I WILLL MODIFY EACH SERVICE TO SEND EVENTS TO THE BUS
 
-- `cd event_bus`
+POSTS SERVICE WILL SEND AN EVENT WHEN NEW POST GETS CREATED
 
-- `yarn init -y`
+COMMENTS SERVICE WILL SEND AN EVENT WHEN NEW COMMENTS GETS CREATED
 
-- `yarn add express nodemon axios cors`
+# POSTS SERVICE
 
-- `touch index.js`
+- `code posts/index.js`
 
 ```js
 const express = require("express");
-const axios = require("axios");
 const { json, urlencoded } = require("body-parser");
+const { randomBytes } = require("crypto");
 const cors = require("cors");
-const { Console } = require("node:console");
+const { default: axios } = require("axios");
+
+// NOW I NEED axios
 
 const app = express();
 
@@ -23,49 +25,42 @@ app.use(cors());
 app.use(json());
 app.use(urlencoded({ extended: true }));
 
-app.post("/events", async (req, res) => {
-  // TAKING EVENT
-  const event = req.body;
+const posts = { someid: { id: "someid", title: "foo bar baz" } };
 
-  // SENDING NOTIFICATIONS TO ALL SERVICES
-
-  // YOU CAN USE TER ECHOING TO SERVICES
-
-  // TO POSTS SERVICE
-  try {
-    const response = await axios.post("http://localhost/4000/events", event);
-  } catch (err) {
-    console.error(err);
-  }
-
-  // TO COMMENTS SERVICE
-  try {
-    const response = await axios.post("http://localhost/4001/events", event);
-  } catch (err) {
-    console.error(err);
-  }
-  // TO QUERY SERVICE
-  try {
-    const response = await axios.post("http://localhost/4002/events", event);
-  } catch (err) {
-    console.error(err);
-  }
-
-  // JUST TO INDICATE THAT EVERYTHING IS WORKING AS EXPECTED
-  res.send({ status: "OK" });
+app.get("/posts", (req, res) => {
+  res.status(200).send(posts);
 });
 
-const port = 4005;
+// FROM HERE I WILL SEND EVENT TO THE BUS
+app.post("/posts", async (req, res) => {
+  const { title } = req.body;
+  const id = randomBytes(4).toString("hex");
+  posts[id] = { id, title };
+
+  try {
+    // HERE YOU GO
+
+    const response = await axios.post(
+      "http://localhost:4005/events",
+      // HERE IS AN EVENT YOU RE SENDING
+      {
+        type: "PostCreated",
+        // I'LL SEND DATA AS A payload
+        payload: posts[id],
+      }
+    );
+  } catch (err) {
+    console.error("Something went wrong", err);
+    res.end();
+  }
+
+  res.status(201).send(posts[id]);
+});
+
+const port = 4000;
 
 app.listen(port, () => {
-  console.log(`Event Bus on: http://localhost:${port}`);
+  console.log(`listening on: http://localhost:${port}`);
 });
 
-```
-
-- `code package.json`
-
-```json
-"scripts":
-  "start": "npx nodemon index.js"
 ```
