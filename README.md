@@ -8,6 +8,13 @@
 
 - `yarn add express cors`
 
+- `code package.json`
+
+```json
+"scripts":
+    "start": "npx nodemon index.js"
+```
+
 - `touch index.js`
 
 ```js
