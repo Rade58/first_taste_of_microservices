@@ -2,7 +2,6 @@ const express = require("express");
 const axios = require("axios");
 const { json, urlencoded } = require("body-parser");
 const cors = require("cors");
-const { Console } = require("node:console");
 
 const app = express();
 
@@ -18,20 +17,20 @@ app.post("/events", async (req, res) => {
 
   // TO POSTS SERVICE
   try {
-    const response = await axios.post("http://localhost/4000/events", event);
+    const response = await axios.post("http://localhost:4000/events", event);
   } catch (err) {
     console.error(err);
   }
 
   // TO COMMENTS SERVICE
   try {
-    const response = await axios.post("http://localhost/4001/events", event);
+    const response = await axios.post("http://localhost:4001/events", event);
   } catch (err) {
     console.error(err);
   }
   // TO QUERY SERVICE
   try {
-    const response = await axios.post("http://localhost/4002/events", event);
+    const response = await axios.post("http://localhost:4002/events", event);
   } catch (err) {
     console.error(err);
   }

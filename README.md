@@ -196,7 +196,7 @@ THAT'S BECAUSE I WANT TO TEST THS BEFORE I CONTINUE
 
 - `cd comments/` `yarn start`
 
-- `cd event_bus` `yarn start`
+- `cd event_bus/` `yarn start`
 
 NOW TRY TO CREATE POST AND LOOK AT TERMINAL TERMINALS OF POSTS AND COMMENTS SERVICES
 
