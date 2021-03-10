@@ -32,9 +32,9 @@ app.post("/events", async (req, res) => {
   console.log({ type, payload });
 
   // BECAUSE COMMENT SERVICE ALREDY KNOWS THAT COMMENT IS CREATED
-  if (type === "CommentCreated") {
+  /* if (type === "CommentCreated") {
     return res.end();
-  }
+  } */
 });
 
 // -----------------------------
@@ -91,7 +91,7 @@ app.post("/posts/:id/comments", async (req, res) => {
       },
     });
   } catch (err) {
-    console.err(err, "Couldn't send an event");
+    console.error(err, "Couldn't send an event");
   }
 
   res.status(201).send({ id, content });

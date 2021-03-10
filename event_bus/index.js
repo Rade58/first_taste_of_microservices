@@ -13,24 +13,26 @@ app.post("/events", async (req, res) => {
   // TAKING EVENT
   const event = req.body;
 
+  console.log("COMMENT COMMENT");
+
   // SENDING NOTIFICATIONS TO ALL SERVICES
 
   // TO POSTS SERVICE
   try {
-    const response = await axios.post("http://localhost:4000/events", event);
+    await axios.post("http://localhost:4000/events", event);
   } catch (err) {
     console.error(err);
   }
 
   // TO COMMENTS SERVICE
   try {
-    const response = await axios.post("http://localhost:4001/events", event);
+    await axios.post("http://localhost:4001/events", event);
   } catch (err) {
     console.error(err);
   }
   // TO QUERY SERVICE
   try {
-    const response = await axios.post("http://localhost:4002/events", event);
+    await axios.post("http://localhost:4002/events", event);
   } catch (err) {
     console.error(err);
   }
