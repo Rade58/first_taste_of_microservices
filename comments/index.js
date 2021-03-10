@@ -23,9 +23,11 @@ const commentsByPostId = {
   },
 };
 
-// ADDING /events HANDLER
+// ADDING /events HANDLER ---------------------------------
 
 app.post("/events", async (req, res) => {
+  console.log("/eventS COMMENT HITTED");
+
   const { type, payload } = req.body;
 
   // I WILL JUST CONSOLE LOG STUFF FOR NOW
@@ -37,7 +39,7 @@ app.post("/events", async (req, res) => {
   } */
 });
 
-// -----------------------------
+// --------------------------------------------------------
 
 app.get("/posts/:id/comments", (req, res) => {
   const { id: postId } = req.params;
