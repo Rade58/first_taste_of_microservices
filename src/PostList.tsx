@@ -6,7 +6,16 @@ import CommentCreate from "./CommentCreate";
 import CommentList from "./CommentList";
 
 const PostList: FC = () => {
-  const [posts, setPosts] = useState<{ title: string; id: string }[]>([]);
+  // POSTS NOW HAVE MORE DATA ON THEM
+  // const [posts, setPosts] = useState<{ title: string; id: string }[]>([]);
+  // THEY HAVE COMMENTS ON THEM TOO
+  const [posts, setPosts] = useState<
+    {
+      id: string;
+      title: string;
+      comments: { id: string; content: string; postId: string }[];
+    }[]
+  >([]);
 
   const getPostsCallback = useCallback(async () => {
     // INSTEAD OF POSTS SERVICE
@@ -23,7 +32,14 @@ const PostList: FC = () => {
       },
     });
 
-    const posts: { [key: string]: { title: string; id: string } } = res.data;
+    // JUST ADDING COMMENTS TO TYPE (TYPESCRIPT)
+    const posts: {
+      [key: string]: {
+        title: string;
+        id: string;
+        comments: { id: string; content: string; postId: string }[];
+      };
+    } = res.data;
 
     const normalizedPosts = Object.values(posts);
 
@@ -36,7 +52,8 @@ const PostList: FC = () => {
 
   return (
     <div>
-      {posts.map(({ id, title }) => (
+      {/* RETRUCTURING ALSO COMMENTS */}
+      {posts.map(({ id, title, comments }) => (
         <div
           key={id}
           className="card d-flex flex-row flex-wrap justify-content-between"
@@ -45,7 +62,9 @@ const PostList: FC = () => {
           <div className="card-body">
             <h3>{title}</h3>
             <CommentCreate postId={id} />
-            <CommentList postId={id} />
+            {/* NEED TO DO PROP DRILLING TO GIVE COMMENTS
+            TO COMMENTS LIST */}
+            <CommentList postId={id} comments={comments} />
           </div>
         </div>
       ))}

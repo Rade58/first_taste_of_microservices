@@ -1,7 +1,9 @@
 import React, { FC, useCallback, useEffect, useState } from "react";
 import axios from "axios";
 
-const CommentList: FC<{ postId: string }> = ({ postId }) => {
+// EXTENDING PROP TYPES, TO INCLUDE COMMENTS ARRAY
+
+const CommentList: FC<{ postId: string; comments: {} }> = ({ postId }) => {
   const [comments, setComments] = useState<{ id: string; content: string }[]>(
     []
   );
