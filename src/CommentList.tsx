@@ -3,12 +3,18 @@ import axios from "axios";
 
 // EXTENDING PROP TYPES, TO INCLUDE COMMENTS ARRAY
 
-const CommentList: FC<{ postId: string; comments: {} }> = ({ postId }) => {
-  const [comments, setComments] = useState<{ id: string; content: string }[]>(
+const CommentList: FC<{
+  postId: string;
+  comments: { id: string; content: string; postId: string }[];
+}> = ({ postId, comments }) => {
+  // NO NEED FOR THIS STATE
+  /* const [comments, setComments] = useState<{ id: string; content: string }[]>(
     []
   );
+ */
 
-  const getCommentsByPostIdCallback = useCallback(async () => {
+  // NO NEED TO HIT COMMENTS SERVICE WITH
+  /* const getCommentsByPostIdCallback = useCallback(async () => {
     try {
       const res = await axios.get(
         `http://localhost:4001/posts/${postId}/comments`,
@@ -31,11 +37,11 @@ const CommentList: FC<{ postId: string; comments: {} }> = ({ postId }) => {
       console.log(error, `no commoents for post id: ${postId}`);
     }
     //
-  }, [setComments]);
+  }, [setComments]); */
 
-  useEffect(() => {
+  /* useEffect(() => {
     getCommentsByPostIdCallback();
-  }, []);
+  }, []); */
 
   return (
     <ul>
