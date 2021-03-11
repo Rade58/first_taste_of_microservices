@@ -1,10 +1,4 @@
-# HANDLING NOTIFICATIONS
-
-I MADE A SCAFOLD FOR QUERY SERVICE IN PREVIOUS BRANCH
-
-NOW I NEDD TO HANDLE EVENTS SENT FROM THE BUS, INSIDE MENTIONED SERVICE
-
-YOU CAN CALL THEM EVENTS; BUT **ANYTHING SENT FROM EVENT BUS I LIKE CALLING "NOTIFICATIONS"**
+# HANDLING GET REQUEST FOR QUERY SERVICE
 
 - `code query/index.js`
 
@@ -18,32 +12,25 @@ const app = express();
 app.use(cors());
 app.use(json());
 
-// FIRS LETS ADD DATA STRUCTURE FOR STORING STUFF
-// A FAKE DATABASE, BECAUSE I AM DOING THINGS IN MEMORY
-// FOR THIS PROJECT (I DON'T HAVE DATABASE)
 const posts = {
-  // THIS IS DICTIONARY
-  // AND ONE DOCUMENT WOULD LOOK LIKE THIS
   /* "placeholder post Id": {
     id: "same post id",
     title: "posts title",
     comments: [
-      // comments associated with one post
       { id: "comment id", content: "stuff", postId: "you know" },
     ],
   }, */
 };
 
-// THIS WON'T BE HIT FBY THE BUSS
+// HANDLING GET FOR /posts
 app.get("/posts", async (req, res) => {
-  // I'LL FILL THIS OUT IN NEXT BRANCH
+  //
+
+  res.send(posts);
 });
 
-// LETS HANDLE EVENTS (NOTIFICATIONS FROM THE BUS)
 app.post("/events", async (req, res) => {
   const { type, payload } = req.body;
-
-  // NOW I AM HANDLING STORING
 
   if (type === "PostCreated") {
     posts[payload.id] = { ...payload, comments: [] };
@@ -55,13 +42,10 @@ app.post("/events", async (req, res) => {
     posts[postId]["comments"].push({
       id: payload.id,
       content: payload.content,
-      // NOT SURE THAT I NEDD THIS
-      // BUT I'LL ADD IT HERE
       postId,
     });
   }
 
-  // SENDING EMPTY OBJECT BECAUSE BUS DOESN'T NEED ANYTHING BACK
   res.send({});
 });
 
@@ -70,8 +54,7 @@ const port = 4002;
 app.listen(port, () => {
   console.log(`Query Service on: http://localhost:${port}`);
 });
+
 ```
 
-IN NEXT BRANCH I WILL BE HANDLING GET REQUEST FOR THIS QUERY SERVICE
-
-
+LIKE YOU SAW, I SENDING WHOLE POSTS, EVERY DOCUMENT
