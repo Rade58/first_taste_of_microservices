@@ -58,3 +58,25 @@ app.listen(port, () => {
 ```
 
 LIKE YOU SAW, I SENDING WHOLE POSTS, EVERY DOCUMENT
+
+# TIME TO MANUALY TEST EVERYTHING
+
+YOU'LL HAVE MANY TERMINALS
+
+- `yarn start`
+
+NEW TERMINAL
+
+- `cd /event_bus` `yarn start`
+
+NEW TERMINAL
+
+- `cd /posts` `yarn start`
+
+NEW TERMINAL
+
+- `cd /comments` `yarn start`
+
+NEW TERMINAL
+
+- `cd /query` `yarn start`
