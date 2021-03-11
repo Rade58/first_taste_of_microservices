@@ -18,7 +18,7 @@ const posts = {
     title: "posts title",
     comments: [
       // comments associated with one post
-      { id: "comment id", content: "stuff" },
+      { id: "comment id", content: "stuff", postId: "you know" },
     ],
   }, */
 };
@@ -43,8 +43,12 @@ app.post("/events", async (req, res) => {
     posts[postId]["comments"].push({
       id: payload.id,
       content: payload.content,
+      postId,
     });
   }
+
+  // SENDING EMPTY OBJECKT BECAUSE BUS DOESN'T NEED ANYTHING BACK
+  res.send({});
 });
 
 const port = 4002;
