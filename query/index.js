@@ -27,9 +27,24 @@ app.get("/posts", async (req, res) => {
   // -
 });
 
-// LETS HANDLE EVENTS
+// LETS HANDLE EVENTS (NOTIFICATIONS FROM THE BUS)
 app.post("/events", async (req, res) => {
-  // I'LL LEAVE THIS EMPTY FOR NOW
+  const { type, payload } = req.body;
+
+  // NOW I AM HANDLING STORING
+
+  if (type === "PostCreated") {
+    posts[payload.id] = { ...payload, comments: [] };
+  }
+
+  if (type === "CommentCreated") {
+    const postId = payload.postId;
+
+    posts[postId]["comments"].push({
+      id: payload.id,
+      content: payload.content,
+    });
+  }
 });
 
 const port = 4002;
