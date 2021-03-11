@@ -34,8 +34,9 @@ const posts = {
   }, */
 };
 
+// THIS WON'T BE HIT FBY THE BUSS
 app.get("/posts", async (req, res) => {
-  // -
+  // I'LL FILL THIS OUT IN NEXT BRANCH
 });
 
 // LETS HANDLE EVENTS (NOTIFICATIONS FROM THE BUS)
@@ -54,6 +55,8 @@ app.post("/events", async (req, res) => {
     posts[postId]["comments"].push({
       id: payload.id,
       content: payload.content,
+      // NOT SURE THAT I NEDD THIS
+      // BUT I'LL ADD IT HERE
       postId,
     });
   }
@@ -69,5 +72,6 @@ app.listen(port, () => {
 });
 ```
 
+IN NEXT BRANCH I WILL BE HANDLING GET REQUEST FOR THIS QUERY SERVICE
 
 
