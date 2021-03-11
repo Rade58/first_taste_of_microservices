@@ -14,7 +14,7 @@ app.get("/posts", async (req, res) => {
 
 // SO THIS IS GOING TO BE A HANDLER FOR ANTICAPATING
 // EVERY EVENT SENT BY EVENT BUS
-app.post("/posts", async (req, res) => {
+app.post("/events", async (req, res) => {
   // I'LL LEAVE THIS EMPTY FOR NOW
 });
 

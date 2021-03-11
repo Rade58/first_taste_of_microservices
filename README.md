@@ -34,8 +34,10 @@ app.get("/posts", async (req, res) => {
 
 // SO THIS IS GOING TO BE A HANDLER FOR ANTICAPATING
 // EVERY EVENT SENT BY EVENT BUS
-app.post("/posts", async (req, res) => {
+app.post("/events", async (req, res) => {
   // I'LL LEAVE THIS EMPTY FOR NOW
+  // BUT AS YOU CAN SE THIS IS A /events ROUTE
+  // THAT MEANS IT WILL BE HITTED ONLY BY THE BUS
 });
 
 const port = 4002;
