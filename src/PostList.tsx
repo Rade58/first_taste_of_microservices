@@ -9,7 +9,15 @@ const PostList: FC = () => {
   const [posts, setPosts] = useState<{ title: string; id: string }[]>([]);
 
   const getPostsCallback = useCallback(async () => {
-    const res = await axios.get("http://localhost:4000/posts", {
+    // INSTEAD OF POSTS SERVICE
+    /* const res = await axios.get("http://localhost:4000/posts", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    */
+    // I'LL HIT QUERY SERVICE
+    const res = await axios.get("http://localhost:4002/posts", {
       headers: {
         "Content-Type": "application/json",
       },
@@ -26,8 +34,6 @@ const PostList: FC = () => {
     getPostsCallback();
   }, [getPostsCallback]);
 
-  // ADDING BOOTSTRAP CLASSES, CHANGING TAGS A BIT
-  // ADDING SOME STYLES
   return (
     <div>
       {posts.map(({ id, title }) => (
