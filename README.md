@@ -1,257 +1,39 @@
-# HANDLING "CommentModerated" EVENT ISIDE COMMENTS SERVICE; AND HANDLING "CoommentUpdated" INSIDE QUERY AERVICES
+# SOME FIXES
 
-- `code comments/index.js`
+# WE CAN TEST THIS NOW
 
-```js
-const express = require("express");
-const { json, urlencoded } = require("body-parser");
-const { randomBytes } = require("crypto");
-const cors = require("cors");
-const axios = require("axios");
+NOT THROUGH REACT APP (IN A SENSE THAT WE ARE NOT RENDERING ANYTHING BASED ON status)
 
-const app = express();
+BUT WE CAN START ALL SERVICES AND START A REACT APP AND THEN WE CAN MAKE FEW POST AND COMMENTS
 
-app.use(cors());
-app.use(json());
-app.use(urlencoded({ extended: true }));
+**AND THEN WE CAN EXECUTE MANUAL TEST BY SENDING REQUEST WITH `httpie` TO QUERY SERVICE**
 
-const commentsByPostId = {
-  "post id": {
-    id: "post id",
+- `yarn start`
 
-    comments: [
-      {
-        id: "",
-        content: "",
-        status: "pending",
-      },
-    ],
-  },
-};
+NEW TERMINAL
 
-// HANDLING "CommentModerated"
-app.post("/events", async (req, res) => {
-  const { type, payload } = req.body;
+- `cd posts` `yarn start`
 
-  if (type === "CommentModerated") {
-    const { postId, status, content, id } = payload;
-    console.log({ status });
+NEW TERMINAL
 
-    // WE ARE SENDING "CommentUpdated" TO EVENT BUS
+- `cd comments` `yarn start`
 
-    await axios.post("http://localhost:4005/events", {
-      type: "CommentUpdated",
-      payload: {
-        id,
-        postId,
-        content,
-        status: status,
-      },
-    });
+NEW TERMINAL
 
-    return res.send({});
-  }
+- `cd query` `yarn start`
 
-  res.end();
-});
+NEW TERMINAL
 
-app.get("/posts/:id/comments", (req, res) => {
-  const { id: postId } = req.params;
+- `cd moderation` `yarn start`
 
-  if (commentsByPostId[postId]) {
-    res.status(200).send(commentsByPostId[postId]);
-  } else {
-    res.status(404).end();
-  }
-});
+NEW TERMINAL
 
-app.post("/posts/:id/comments", async (req, res) => {
-  const { id: postId } = req.params;
+- `cd event_bus` `yarn start`
 
-  const { content } = req.body;
+I MADE SOME POSTS AND COMMENTS (**IMPORTANT THING IS THAT SOME OF THE COMMENTS SHOUD HAVE WORDS "`foobar`" AND "`bazmod`"**)
 
-  const id = randomBytes(4).toString("hex");
+**GETTING ALL POSTS WITH httpie**
 
-  const status = "pending";
+- `http GET :4002/posts`
 
-  if (commentsByPostId[postId]) {
-    commentsByPostId[postId].comments.push({
-      content,
-      id,
-      status,
-    });
-  } else {
-    commentsByPostId[postId] = {
-      postId,
-      comments: [
-        {
-          id,
-          content,
-          status,
-        },
-      ],
-    };
-  }
-
-  try {
-    await axios.post("http://localhost:4005/events", {
-      type: "CommentCreated",
-      payload: {
-        postId,
-        id,
-        content,
-        status,
-      },
-    });
-  } catch (err) {
-    console.error(err, "Couldn't send an event");
-  }
-
-  res.status(201).send({ id, content, status });
-});
-
-const port = 4001;
-
-app.listen(port, () => {
-  console.log(`Comments service on: http://localhost:${port}`);
-});
-
-```
-
-NOW WE NEED TO HANDLE "CommentUpdted" INSIDE QUERY SERVICE
-
-- `code query/index.js`
-
-```js
-const express = require("express");
-const { json, urlencoded } = require("body-parser");
-const { randomBytes } = require("crypto");
-const cors = require("cors");
-const axios = require("axios");
-
-const app = express();
-
-app.use(cors());
-app.use(json());
-app.use(urlencoded({ extended: true }));
-
-const commentsByPostId = {
-  "post id": {
-    id: "post id",
-
-    comments: [
-      {
-        id: "",
-        content: "",
-        status: "pending",
-      },
-    ],
-  },
-};
-
-// HANDLING "CommentModerated"
-app.post("/events", async (req, res) => {
-  const { type, payload } = req.body;
-
-  if (type === "CommentModerated") {
-    const { postId, status, content, id } = payload;
-    // WE WILL FIRST STORE MODERATED COMMENT
-
-    // THIS MIGHT BE USELESS SINCE WE ARE NEVER HITTING DATABASE
-    // OF COMMENTS SERVICE, BUT I'LL LEAVE THIS SINCE
-    // I AM GOING TO DO SAME THING IN A QUERY SERVICE
-    const comment = commentsByPostId[postId]["comments"].find((val, index) => {
-      if (val.postId === postId) {
-        // i = index;
-        return true;
-      } else {
-        return false;
-      }
-    });
-
-    comment.status = status;
-
-    // ------------------
-
-    // THEN WE ARE SENDING "CommentUpdated" TO EVENT BUS
-
-    await axios.post("http://localhost:4005/events", {
-      type: "CommentUpdated",
-      payload: {
-        id,
-        postId,
-        content,
-        status,
-      },
-    });
-
-    return res.send({});
-  }
-
-  res.end();
-});
-
-app.get("/posts/:id/comments", (req, res) => {
-  const { id: postId } = req.params;
-
-  if (commentsByPostId[postId]) {
-    res.status(200).send(commentsByPostId[postId]);
-  } else {
-    res.status(404).end();
-  }
-});
-
-app.post("/posts/:id/comments", async (req, res) => {
-  const { id: postId } = req.params;
-
-  const { content } = req.body;
-
-  const id = randomBytes(4).toString("hex");
-
-  const status = "pending";
-
-  if (commentsByPostId[postId]) {
-    commentsByPostId[postId].comments.push({
-      content,
-      id,
-      status,
-    });
-  } else {
-    commentsByPostId[postId] = {
-      postId,
-      comments: [
-        {
-          id,
-          content,
-          status,
-        },
-      ],
-    };
-  }
-
-  try {
-    await axios.post("http://localhost:4005/events", {
-      type: "CommentCreated",
-      payload: {
-        postId,
-        id,
-        content,
-        status,
-      },
-    });
-  } catch (err) {
-    console.error(err, "Couldn't send an event");
-  }
-
-  res.status(201).send({ id, content, status });
-});
-
-const port = 4001;
-
-app.listen(port, () => {
-  console.log(`Comments service on: http://localhost:${port}`);
-});
-
-```
-
-I HAVE FEW MISTAKES I THINK, AND THEY ARE EVENT BUS RELATED BUT ALSO, I WILL REWRITE MODREATION A LTTLE BIT
+## AFTER THIS, LETS MODIFY REACT APP TO DYSPLAYED BASED ON MODERATION STATUS 
