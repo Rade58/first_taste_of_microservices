@@ -185,7 +185,7 @@ app.post("/events", async (req, res) => {
       if (comment.id !== payload.id) {
         return comment;
       } else {
-        return { ...comment, status: payload.status };
+        return { ...comment, content: payload.content, status: payload.status };
       }
     });
   }
@@ -198,5 +198,40 @@ const port = 4002;
 app.listen(port, () => {
   console.log(`Query Service on: http://localhost:${port}`);
 });
-
 ```
+
+# WE CAN TEST THIS NOW
+
+NOT THROUGH REACT APP (IN A SENSE THAT WE ARE NOT RENDERING ANYTHING BASED ON status)
+
+BUT WE CAN START ALL SERVICES AND START A REACT APP AND THEN WE CAN MAKE FEW POST AND COMMENTS
+
+**AND THEN WE CAN EXECUTE MANUAL TEST BY SENDING REQUEST WITH `httpie` TO QUERY SERVICE**
+
+- `yarn start`
+
+NEW TERMINAL
+
+- `cd posts` `yarn start`
+
+NEW TERMINAL
+
+- `cd comments` `yarn start`
+
+NEW TERMINAL
+
+- `cd query` `yarn start`
+
+NEW TERMINAL
+
+- `cd moderation` `yarn start`
+
+NEW TERMINAL
+
+- `cd event_bus` `yarn start`
+
+
+
+
+
+

@@ -52,7 +52,7 @@ app.post("/events", async (req, res) => {
       if (comment.id !== payload.id) {
         return comment;
       } else {
-        return { ...comment, status: payload.status };
+        return { ...comment, content: payload.content, status: payload.status };
       }
     });
   }
