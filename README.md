@@ -230,8 +230,8 @@ NEW TERMINAL
 
 - `cd event_bus` `yarn start`
 
+I MADE SOME POSTS AND COMMENTS
 
+**GETTING ALL POSTS WITH httpie**
 
-
-
-
+- `http :4002/events`
