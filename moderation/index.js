@@ -4,17 +4,6 @@ const { json } = require("body-parser");
 
 const app = express();
 
-// WE HAVE ANOTHER DATBASE
-// THIS WILL BE A DATABSE OF COMMNTS
-
-const comments = {
-  /* "comment id": {
-    id: "comment id",
-    content: "",
-    postId: ""
-  } */
-};
-
 app.use(json());
 
 // ANTICIPATING ECHO FROM EVENT BUS
@@ -29,6 +18,7 @@ app.post("/events", async (req, res) => {
     // WITH AXIOS
     // AND "CommentModerated" WILL BE ANTICIPATED BY COMMENTS
     // SERVICE
+    // I WILL MAKE A PUSE BEFORE DOING ALL THIS
   }
 });
 
