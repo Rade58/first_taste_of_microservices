@@ -20,11 +20,12 @@ app.post("/events", async (req, res) => {
         ? "rejected"
         : "approved";
 
-    // I CAN NOW SEND "CommentModerated" EVENT
-    await axios.post("http://localhost:4002/events", {
+    // I CAN NOW SEND "CommentModerated" EVENT TO THE EVENT BUS
+    await axios.post("http://localhost:4005/events", {
       type: "CommentModerated",
       payload: {
         id,
+        content,
         status,
       },
     });
