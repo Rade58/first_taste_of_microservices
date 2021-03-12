@@ -11,7 +11,6 @@ const posts = {
   /* "placeholder post Id": {
     id: "same post id",
     title: "posts title",
-    // SO status WILL BE PART OF THE DOCUMENT TOO
     comments: [
       { id: "comment id", content: "stuff", postId: "you know", status: "pending or rejected or approved" },
     ],
@@ -24,7 +23,6 @@ app.get("/posts", async (req, res) => {
   res.send(posts);
 });
 
-// HERE WE DESTRUCTURE status TOO (FROM PAYLOAD OFCOURSE)
 app.post("/events", async (req, res) => {
   const { type, payload } = req.body;
 
@@ -43,6 +41,19 @@ app.post("/events", async (req, res) => {
       postId,
       // HERE YOU GO
       status: payload.status,
+    });
+  }
+
+  // OK HERE WE ARE GOING TO HANDLE "CommentUpdated"
+
+  if (type === "CommentUpdated") {
+    // WE ARE UPDATING 'DATABASE' OF QUERY SERVICE
+    posts[payload.postId]["comments"].filter((comment) => {
+      if (comment.id !== payload.id) {
+        return comment;
+      } else {
+        return { ...comment, status: payload.status };
+      }
     });
   }
 

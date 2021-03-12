@@ -32,7 +32,7 @@ app.post("/events", async (req, res) => {
     const { postId, status, content, id } = payload;
     // WE WILL FIRST STORE MODERATED COMMENT
 
-    // BUT WE NEED TO FILTER
+    // BUT WE NEED TO FILTER (MAYBE THIS IS USELESS)
     commentsByPostId[postId]["comments"].filter((comment) => {
       if (comment.id !== id) {
         return comment;
