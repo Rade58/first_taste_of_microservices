@@ -11,19 +11,20 @@ const posts = {
   /* "placeholder post Id": {
     id: "same post id",
     title: "posts title",
+    // SO status WILL BE PART OF THE DOCUMENT TOO
     comments: [
-      { id: "comment id", content: "stuff", postId: "you know" },
+      { id: "comment id", content: "stuff", postId: "you know", status: "pending or rejected or approved" },
     ],
   }, */
 };
 
-// HANDLING GET FOR /posts
 app.get("/posts", async (req, res) => {
   //
 
   res.send(posts);
 });
 
+// HERE WE DESTRUCTURE status TOO (FROM PAYLOAD OFCOURSE)
 app.post("/events", async (req, res) => {
   const { type, payload } = req.body;
 
@@ -34,10 +35,14 @@ app.post("/events", async (req, res) => {
   if (type === "CommentCreated") {
     const postId = payload.postId;
 
+    // WE ARE DOING THIS HERE
+
     posts[postId]["comments"].push({
       id: payload.id,
       content: payload.content,
       postId,
+      // HERE YOU GO
+      status: payload.status,
     });
   }
 
