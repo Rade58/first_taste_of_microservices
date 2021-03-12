@@ -6,19 +6,12 @@ const app = express();
 
 app.use(json());
 
-// ANTICIPATING ECHO FROM EVENT BUS
 app.post("/events", async (req, res) => {
   const { type, payload } = req.body;
 
-  // TYPE WE ARE ANTICIPATING IS COMMENT CREATION
   if (type === "CommentCreated") {
-    // IN HERE I WILL DO MODERATION
-    // AFTER WE ARE DONE WITH MODERATION
-    // WE SHOULD EMMIT "CommentModerated"
-    // WITH AXIOS
-    // AND "CommentModerated" WILL BE ANTICIPATED BY COMMENTS
-    // SERVICE
-    // I WILL MAKE A PUSE BEFORE DOING ALL THIS
+    // HERE IS CONTENT, AND WE KNOW HERE THAT STATUS IS pending
+    const { content, id, postId, status } = payload;
   }
 });
 

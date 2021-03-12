@@ -163,6 +163,8 @@ app.post("/posts/:id/comments", async (req, res) => {
         // BECAUSE FROM HERE, THAEN THROUGH EVENT BUS, WILL END 
         // UP TO MODERATION SERVICE
         status,
+        // IT WILL END UP TO QUERY SERVICE TOO (DON'T FORGET)
+        // BECUSE IT IS GOING TO BE ECHOED BCK THERE TOO
       },
     });
   } catch (err) {
