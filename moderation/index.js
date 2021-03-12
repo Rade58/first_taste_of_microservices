@@ -11,7 +11,7 @@ app.post("/events", async (req, res) => {
   const { type, payload } = req.body;
 
   // TYPE WE ARE ANTICIPATING IS COMMENT CREATION
-  if (type === "CommentCreation") {
+  if (type === "CommentCreated") {
     // IN HERE I WILL DO MODERATION
     // AFTER WE ARE DONE WITH MODERATION
     // WE SHOULD EMMIT "CommentModerated"

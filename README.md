@@ -39,7 +39,7 @@ app.post("/events", async (req, res) => {
   const { type, payload } = req.body;
 
   // TYPE WE ARE ANTICIPATING IS COMMENT CREATION
-  if (type === "CommentCreation") {
+  if (type === "CommentCreated") {
     // IN HERE I WILL DO MODERATION
     // AFTER WE ARE DONE WITH MODERATION
     // WE SHOULD EMMIT "CommentModerated"
@@ -66,3 +66,7 @@ AND EMMIT THAT TOGETHER WITH "CommentModerated" EVENT
 BEFORE THAT WE WILL TEST THAT THIS SERVICE IS WORKING
 
 - `cd moderation` `yarn start`
+
+IT IS OPERATIONAL
+
+#
