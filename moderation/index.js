@@ -10,9 +10,29 @@ app.post("/events", async (req, res) => {
   const { type, payload } = req.body;
 
   if (type === "CommentCreated") {
-    // HERE IS CONTENT, AND WE KNOW HERE THAT STATUS IS pending
-    const { content, id, postId, status } = payload;
+    const { content, id } = payload;
+
+    // YOU CAN USE TRNARY TO DECIDE MODERATION
+    const forbidden = ["foobar", "bazmod"];
+
+    const status =
+      content.includes(forbidden[0]) || content.includes(forbidden[1])
+        ? "rejected"
+        : "approved";
+
+    // I CAN NOW SEND "CommentModerated" EVENT
+    await axios.post("http://localhost:4002/events", {
+      type: "CommentModerated",
+      payload: {
+        id,
+        status,
+      },
+    });
+
+    return res.send({});
   }
+
+  res.end();
 });
 
 const port = 4003;
