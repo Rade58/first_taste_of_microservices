@@ -15,10 +15,7 @@ app.post("/events", async (req, res) => {
     // YOU CAN USE TRNARY TO DECIDE MODERATION
     const forbidden = ["foobar", "bazmod"];
 
-    const status =
-      content.includes(forbidden[0]) || content.includes(forbidden[1])
-        ? "approved"
-        : "rejected";
+    const status = content.includes(forbidden[0]) ? "rejected" : "approved";
 
     // I CAN NOW SEND "CommentModerated" EVENT TO THE EVENT BUS
     await axios.post("http://localhost:4005/events", {
