@@ -13,7 +13,12 @@ const PostList: FC = () => {
     {
       id: string;
       title: string;
-      comments: { id: string; content: string; postId: string }[];
+      comments: {
+        id: string;
+        content: string;
+        postId: string;
+        status: string;
+      }[];
     }[]
   >([]);
 
@@ -37,7 +42,12 @@ const PostList: FC = () => {
       [key: string]: {
         title: string;
         id: string;
-        comments: { id: string; content: string; postId: string }[];
+        comments: {
+          id: string;
+          content: string;
+          postId: string;
+          status: string;
+        }[];
       };
     } = res.data;
 

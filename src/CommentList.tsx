@@ -5,7 +5,7 @@ import axios from "axios";
 
 const CommentList: FC<{
   postId: string;
-  comments: { id: string; content: string; postId: string }[];
+  comments: { id: string; content: string; postId: string; status: string }[];
 }> = ({ postId, comments }) => {
   // NO NEED FOR THIS STATE
   /* const [comments, setComments] = useState<{ id: string; content: string }[]>(
@@ -45,8 +45,10 @@ const CommentList: FC<{
 
   return (
     <ul>
-      {comments.map(({ id, content }) => (
-        <li key={id}>{content}</li>
+      {comments.map(({ id, content, status }) => (
+        <li key={id}>
+          {content} ({status})
+        </li>
       ))}
     </ul>
   );

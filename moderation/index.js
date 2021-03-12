@@ -16,7 +16,7 @@ app.post("/events", async (req, res) => {
     const forbidden = ["foobar", "bazmod"];
 
     const status =
-      !content.includes(forbidden[0]) && !content.includes(forbidden[1])
+      content.includes(forbidden[0]) || content.includes(forbidden[1])
         ? "approved"
         : "rejected";
 
