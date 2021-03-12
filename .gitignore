@@ -31,3 +31,5 @@ comments/node_modules
 event_bus/node_modules
 # query
 query/node_modules
+# moderation
+moderation/node_modules
