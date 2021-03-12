@@ -132,87 +132,132 @@ NOW WE NEED TO HANDLE "CommentUpdted" INSIDE QUERY SERVICE
 
 ```js
 const express = require("express");
+const { json, urlencoded } = require("body-parser");
+const { randomBytes } = require("crypto");
 const cors = require("cors");
-const { json } = require("body-parser");
+const axios = require("axios");
 
 const app = express();
 
 app.use(cors());
 app.use(json());
+app.use(urlencoded({ extended: true }));
 
-const posts = {
-  /* "placeholder post Id": {
-    id: "same post id",
-    title: "posts title",
+const commentsByPostId = {
+  "post id": {
+    id: "post id",
+
     comments: [
-      { id: "comment id", content: "stuff", postId: "you know", status: "pending or rejected or approved" },
+      {
+        id: "",
+        content: "",
+        status: "pending",
+      },
     ],
-  }, */
+  },
 };
 
-app.get("/posts", async (req, res) => {
-  //
-
-  res.send(posts);
-});
-
+// HANDLING "CommentModerated"
 app.post("/events", async (req, res) => {
   const { type, payload } = req.body;
 
-  if (type === "PostCreated") {
-    posts[payload.id] = { ...payload, comments: [] };
-  }
+  if (type === "CommentModerated") {
+    const { postId, status, content, id } = payload;
+    // WE WILL FIRST STORE MODERATED COMMENT
 
-  if (type === "CommentCreated") {
-    console.log({ payload });
-
-    const postId = payload.postId;
-
-    if (postId) {
-      // WE ARE DOING THIS HERE
-      if (posts[postId] && posts[postId]["comments"]) {
-        posts[postId]["comments"].push({
-          id: payload.id,
-          content: payload.content,
-          postId,
-          // HERE YOU GO
-          status: payload.status,
-        });
+    // THIS MIGHT BE USELESS SINCE WE ARE NEVER HITTING DATABASE
+    // OF COMMENTS SERVICE, BUT I'LL LEAVE THIS SINCE
+    // I AM GOING TO DO SAME THING IN A QUERY SERVICE
+    const comment = commentsByPostId[postId]["comments"].find((val, index) => {
+      if (val.postId === postId) {
+        // i = index;
+        return true;
+      } else {
+        return false;
       }
-    }
+    });
+
+    comment.status = status;
+
+    // ------------------
+
+    // THEN WE ARE SENDING "CommentUpdated" TO EVENT BUS
+
+    await axios.post("http://localhost:4005/events", {
+      type: "CommentUpdated",
+      payload: {
+        id,
+        postId,
+        content,
+        status,
+      },
+    });
+
+    return res.send({});
   }
 
-  // OK HERE WE ARE GOING TO HANDLE "CommentUpdated"
-
-  if (type === "CommentUpdated") {
-    const postId = payload.postId;
-
-    // console.log({ posts, type });
-
-    // WE ARE UPDATING 'DATABASE' OF QUERY SERVICE
-
-    if (posts[postId] !== undefined && posts[postId]["comments"]) {
-      posts[payload.postId]["comments"].filter((comment) => {
-        if (comment.id !== payload.id) {
-          return comment;
-        } else {
-          return {
-            ...comment,
-            content: payload.content,
-            status: payload.status,
-          };
-        }
-      });
-    }
-  }
-
-  res.send({});
+  res.end();
 });
 
-const port = 4002;
+app.get("/posts/:id/comments", (req, res) => {
+  const { id: postId } = req.params;
+
+  if (commentsByPostId[postId]) {
+    res.status(200).send(commentsByPostId[postId]);
+  } else {
+    res.status(404).end();
+  }
+});
+
+app.post("/posts/:id/comments", async (req, res) => {
+  const { id: postId } = req.params;
+
+  const { content } = req.body;
+
+  const id = randomBytes(4).toString("hex");
+
+  const status = "pending";
+
+  if (commentsByPostId[postId]) {
+    commentsByPostId[postId].comments.push({
+      content,
+      id,
+      status,
+    });
+  } else {
+    commentsByPostId[postId] = {
+      postId,
+      comments: [
+        {
+          id,
+          content,
+          status,
+        },
+      ],
+    };
+  }
+
+  try {
+    await axios.post("http://localhost:4005/events", {
+      type: "CommentCreated",
+      payload: {
+        postId,
+        id,
+        content,
+        status,
+      },
+    });
+  } catch (err) {
+    console.error(err, "Couldn't send an event");
+  }
+
+  res.status(201).send({ id, content, status });
+});
+
+const port = 4001;
 
 app.listen(port, () => {
-  console.log(`Query Service on: http://localhost:${port}`);
+  console.log(`Comments service on: http://localhost:${port}`);
 });
 
 ```

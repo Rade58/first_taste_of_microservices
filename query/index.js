@@ -31,7 +31,7 @@ app.post("/events", async (req, res) => {
   }
 
   if (type === "CommentCreated") {
-    console.log({ payload });
+    // console.log({ payload });
 
     const postId = payload.postId;
 
@@ -54,22 +54,25 @@ app.post("/events", async (req, res) => {
   if (type === "CommentUpdated") {
     const postId = payload.postId;
 
-    // console.log({ posts, type });
+    console.log({ type });
 
     // WE ARE UPDATING 'DATABASE' OF QUERY SERVICE
 
-    if (posts[postId] !== undefined && posts[postId]["comments"]) {
-      posts[payload.postId]["comments"].filter((comment) => {
-        if (comment.id !== payload.id) {
-          return comment;
+    if (posts[postId] && posts[postId]["comments"]) {
+      let i = 0;
+
+      const comment = posts[postId]["comments"].find((val, index) => {
+        if (val.postId === postId) {
+          i = index;
+          return true;
         } else {
-          return {
-            ...comment,
-            content: payload.content,
-            status: payload.status,
-          };
+          return false;
         }
       });
+
+      comment.status = payload.status;
+
+      posts[postId]["comments"][i] = comment;
     }
   }
 

@@ -32,28 +32,35 @@ app.post("/events", async (req, res) => {
     const { postId, status, content, id } = payload;
     // WE WILL FIRST STORE MODERATED COMMENT
 
-    // BUT WE NEED TO FILTER (MAYBE THIS IS USELESS)
-    if (commentsByPostId[postId]) {
-      commentsByPostId[postId]["comments"].filter((comment) => {
-        if (comment.id !== id) {
-          return comment;
-        } else {
-          return { ...comment, status };
-        }
-      });
-    }
+    // THIS MIGHT BE USELESS SINCE WE ARE NEVER HITTING DATABASE
+    // OF COMMENTS SERVICE, BUT I'LL LEAVE THIS SINCE
+    // I AM GOING TO DO SAME THING IN A QUERY SERVICE
+    const comment = commentsByPostId[postId]["comments"].find((val, index) => {
+      if (val.postId === postId) {
+        // i = index;
+        return true;
+      } else {
+        return false;
+      }
+    });
+    console.log(status);
+    comment.status = status;
+
+    // ------------------
 
     // THEN WE ARE SENDING "CommentUpdated" TO EVENT BUS
 
-    await axios.post("http://localhost:4005/events", {
-      type: "CommentUpdated",
-      payload: {
-        id,
-        postId,
-        content,
-        status,
-      },
-    });
+    if (comment) {
+      await axios.post("http://localhost:4005/events", {
+        type: "CommentUpdated",
+        payload: {
+          id,
+          postId,
+          content,
+          status: comment.status,
+        },
+      });
+    }
 
     return res.send({});
   }

@@ -15,7 +15,11 @@ const sendNotification = async (url, event) => {
 
     return response;
   } catch (error) {
+    console.log("ERROR-------------------------------------");
+
     console.log(error);
+
+    console.log("ERROR-------------------------------------");
     return "Error";
   }
 };
@@ -33,7 +37,9 @@ app.post("/events", async (req, res) => {
     sendNotification("http://localhost:4003/events", event),
     //
   ]).catch((error) => {
+    console.log("ERROR-------------------------------------");
     console.log(error);
+    console.log("ERROR-------------------------------------");
   });
 
   res.send({ status: "OK" });
