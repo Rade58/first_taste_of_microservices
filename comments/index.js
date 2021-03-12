@@ -18,20 +18,46 @@ const commentsByPostId = {
       {
         id: "",
         content: "",
-        // OK WE WILL ADD A status TO THIS 'PLACEHOLDER'
         status: "pending",
       },
     ],
   },
 };
 
+// HANDLING "CommentModerated"
 app.post("/events", async (req, res) => {
   const { type, payload } = req.body;
 
-  console.log({ type, payload });
-});
+  if (type === "CommentModerated") {
+    const { postId, status, content, id } = payload;
+    // WE WILL FIRST STORE MODERATED COMMENT
 
-// --------------------------------------------------------
+    // BUT WE NEED TO FILTER
+    commentsByPostId[postId]["comments"].filter((comment) => {
+      if (comment.id !== id) {
+        return comment;
+      } else {
+        return { ...comment, status };
+      }
+    });
+
+    // THEN WE ARE SENDING "CommentUpdated" TO EVENT BUS
+
+    await axios.post("http://loclhost:4005/events", {
+      type: "CommentUpdated",
+      payload: {
+        id,
+        postId,
+        content,
+        status,
+      },
+    });
+
+    return res.send({});
+  }
+
+  res.end();
+});
 
 app.get("/posts/:id/comments", (req, res) => {
   const { id: postId } = req.params;
@@ -41,8 +67,6 @@ app.get("/posts/:id/comments", (req, res) => {
   } else {
     res.status(404).end();
   }
-
-  //
 });
 
 app.post("/posts/:id/comments", async (req, res) => {
@@ -52,14 +76,12 @@ app.post("/posts/:id/comments", async (req, res) => {
 
   const id = randomBytes(4).toString("hex");
 
-  // WE WILL ADD PENDING STATUS FOR EVERY CREATED COMMENT
   const status = "pending";
 
   if (commentsByPostId[postId]) {
     commentsByPostId[postId].comments.push({
       content,
       id,
-      // ADDING STATUS
       status,
     });
   } else {
@@ -69,7 +91,6 @@ app.post("/posts/:id/comments", async (req, res) => {
         {
           id,
           content,
-          // HERE TOO
           status,
         },
       ],
@@ -83,7 +104,6 @@ app.post("/posts/:id/comments", async (req, res) => {
         postId,
         id,
         content,
-        // ADDING status HERRE TOO
         status,
       },
     });
@@ -91,8 +111,6 @@ app.post("/posts/:id/comments", async (req, res) => {
     console.error(err, "Couldn't send an event");
   }
 
-  // HERE WE CAN SRND STATUS TOO (I DON'T THINK IT IS IMPORTANT TO BE ADDED HERE
-  // BECAUSE OF NATURE OF MY PROJECT BUT I LEVE IT, IT WON'T MESS ANYTHING)
   res.status(201).send({ id, content, status });
 });
 
