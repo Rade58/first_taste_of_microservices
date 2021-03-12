@@ -33,17 +33,19 @@ app.post("/events", async (req, res) => {
     // WE WILL FIRST STORE MODERATED COMMENT
 
     // BUT WE NEED TO FILTER (MAYBE THIS IS USELESS)
-    commentsByPostId[postId]["comments"].filter((comment) => {
-      if (comment.id !== id) {
-        return comment;
-      } else {
-        return { ...comment, status };
-      }
-    });
+    if (commentsByPostId[postId]) {
+      commentsByPostId[postId]["comments"].filter((comment) => {
+        if (comment.id !== id) {
+          return comment;
+        } else {
+          return { ...comment, status };
+        }
+      });
+    }
 
     // THEN WE ARE SENDING "CommentUpdated" TO EVENT BUS
 
-    await axios.post("http://loclhost:4005/events", {
+    await axios.post("http://localhost:4005/events", {
       type: "CommentUpdated",
       payload: {
         id,

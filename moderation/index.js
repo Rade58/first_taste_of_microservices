@@ -10,7 +10,7 @@ app.post("/events", async (req, res) => {
   const { type, payload } = req.body;
 
   if (type === "CommentCreated") {
-    const { content, id } = payload;
+    const { content, id, postId } = payload;
 
     // YOU CAN USE TRNARY TO DECIDE MODERATION
     const forbidden = ["foobar", "bazmod"];
@@ -27,6 +27,7 @@ app.post("/events", async (req, res) => {
         id,
         content,
         status,
+        postId,
       },
     });
 

@@ -48,7 +48,7 @@ app.post("/events", async (req, res) => {
 
     // THEN WE ARE SENDING "CommentUpdated" TO EVENT BUS
 
-    await axios.post("http://loclhost:4005/events", {
+    await axios.post("http://localhost:4005/events", {
       type: "CommentUpdated",
       payload: {
         id,
@@ -164,30 +164,46 @@ app.post("/events", async (req, res) => {
   }
 
   if (type === "CommentCreated") {
+    console.log({ payload });
+
     const postId = payload.postId;
 
-    // WE ARE DOING THIS HERE
-
-    posts[postId]["comments"].push({
-      id: payload.id,
-      content: payload.content,
-      postId,
-      // HERE YOU GO
-      status: payload.status,
-    });
+    if (postId) {
+      // WE ARE DOING THIS HERE
+      if (posts[postId] && posts[postId]["comments"]) {
+        posts[postId]["comments"].push({
+          id: payload.id,
+          content: payload.content,
+          postId,
+          // HERE YOU GO
+          status: payload.status,
+        });
+      }
+    }
   }
 
   // OK HERE WE ARE GOING TO HANDLE "CommentUpdated"
 
   if (type === "CommentUpdated") {
+    const postId = payload.postId;
+
+    // console.log({ posts, type });
+
     // WE ARE UPDATING 'DATABASE' OF QUERY SERVICE
-    posts[payload.postId]["comments"].filter((comment) => {
-      if (comment.id !== payload.id) {
-        return comment;
-      } else {
-        return { ...comment, content: payload.content, status: payload.status };
-      }
-    });
+
+    if (posts[postId] !== undefined && posts[postId]["comments"]) {
+      posts[payload.postId]["comments"].filter((comment) => {
+        if (comment.id !== payload.id) {
+          return comment;
+        } else {
+          return {
+            ...comment,
+            content: payload.content,
+            status: payload.status,
+          };
+        }
+      });
+    }
   }
 
   res.send({});
@@ -198,6 +214,7 @@ const port = 4002;
 app.listen(port, () => {
   console.log(`Query Service on: http://localhost:${port}`);
 });
+
 ```
 
 # WE CAN TEST THIS NOW
@@ -230,8 +247,8 @@ NEW TERMINAL
 
 - `cd event_bus` `yarn start`
 
-I MADE SOME POSTS AND COMMENTS
+I MADE SOME POSTS AND COMMENTS (**IMPORTANT THING IS THAT SOME OF THE COMMENTS SHOUD HAVE WORDS "`foobar`" AND "`bazmod`"**)
 
 **GETTING ALL POSTS WITH httpie**
 
-- `http :4002/events`
+- `http GET :4002/posts`
