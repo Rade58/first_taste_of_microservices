@@ -18,25 +18,17 @@ const commentsByPostId = {
       {
         id: "",
         content: "",
+        // OK WE WILL ADD A status TO THIS 'PLACEHOLDER'
+        status: "pending",
       },
     ],
   },
 };
 
-// ADDING /events HANDLER ---------------------------------
-
 app.post("/events", async (req, res) => {
-  console.log("/eventS COMMENT HITTED");
-
   const { type, payload } = req.body;
 
-  // I WILL JUST CONSOLE LOG STUFF FOR NOW
   console.log({ type, payload });
-
-  // BECAUSE COMMENT SERVICE ALREDY KNOWS THAT COMMENT IS CREATED
-  /* if (type === "CommentCreated") {
-    return res.end();
-  } */
 });
 
 // --------------------------------------------------------
@@ -53,10 +45,6 @@ app.get("/posts/:id/comments", (req, res) => {
   //
 });
 
-// I WILL SEND EVENT TO THE EVENT BUS
-// AN EVENT THAT INDICATES THAT NEW COMMENT IS CREATED
-// AND ALSO SENDS THAT COMMENT IN A PAYLOAD
-
 app.post("/posts/:id/comments", async (req, res) => {
   const { id: postId } = req.params;
 
@@ -64,10 +52,15 @@ app.post("/posts/:id/comments", async (req, res) => {
 
   const id = randomBytes(4).toString("hex");
 
+  // WE WILL ADD PENDING STATUS FOR EVERY CREATED COMMENT
+  const status = "pending";
+
   if (commentsByPostId[postId]) {
     commentsByPostId[postId].comments.push({
       content,
       id,
+      // ADDING STATUS
+      status,
     });
   } else {
     commentsByPostId[postId] = {
@@ -76,27 +69,31 @@ app.post("/posts/:id/comments", async (req, res) => {
         {
           id,
           content,
+          // HERE TOO
+          status,
         },
       ],
     };
   }
 
-  // SENDING EVENT FROM HERE BECAUSE
-  // HERE I KNOW THAT COMMENT IS CREATED (JOB OF CREATION IS ALREDY FINISHED HERE)
   try {
-    const response = await axios.post("http://localhost:4005/events", {
+    await axios.post("http://localhost:4005/events", {
       type: "CommentCreated",
       payload: {
         postId,
         id,
         content,
+        // ADDING status HERRE TOO
+        status,
       },
     });
   } catch (err) {
     console.error(err, "Couldn't send an event");
   }
 
-  res.status(201).send({ id, content });
+  // HERE WE CAN SRND STATUS TOO (I DON'T THINK IT IS IMPORTANT TO BE ADDED HERE
+  // BECAUSE OF NATURE OF MY PROJECT BUT I LEVE IT, IT WON'T MESS ANYTHING)
+  res.status(201).send({ id, content, status });
 });
 
 const port = 4001;
