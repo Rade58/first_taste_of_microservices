@@ -35,18 +35,9 @@ app.post("/events", async (req, res) => {
 
   if (type === "CommentModerated") {
     const { postId, status, content, id } = payload;
-    // WE WILL FIRST STORE MODERATED COMMENT
+    console.log({ status });
 
-    // BUT WE NEED TO FILTER (MAYBE THIS IS USELESS)
-    commentsByPostId[postId]["comments"].filter((comment) => {
-      if (comment.id !== id) {
-        return comment;
-      } else {
-        return { ...comment, status };
-      }
-    });
-
-    // THEN WE ARE SENDING "CommentUpdated" TO EVENT BUS
+    // WE ARE SENDING "CommentUpdated" TO EVENT BUS
 
     await axios.post("http://localhost:4005/events", {
       type: "CommentUpdated",
@@ -54,7 +45,7 @@ app.post("/events", async (req, res) => {
         id,
         postId,
         content,
-        status,
+        status: status,
       },
     });
 
@@ -124,6 +115,7 @@ const port = 4001;
 app.listen(port, () => {
   console.log(`Comments service on: http://localhost:${port}`);
 });
+
 ```
 
 NOW WE NEED TO HANDLE "CommentUpdted" INSIDE QUERY SERVICE
