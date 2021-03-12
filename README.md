@@ -304,3 +304,6 @@ app.listen(port, () => {
 
 ```
 
+THIS EVENT ("CommentModerated") ISN'T ECHOED INSIDE EVENT BUS
+
+I'LL HANDLE THAT IN NEXT BRANCH
