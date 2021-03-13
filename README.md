@@ -12,7 +12,7 @@ LETS DO THAT FOR OUR QUERY SERVICE
 const express = require("express");
 const cors = require("cors");
 const { json } = require("body-parser");
-const { default: axios } = require("axios");
+const axios = require("axios");
 
 const app = express();
 
