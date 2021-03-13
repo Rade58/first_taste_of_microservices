@@ -73,7 +73,7 @@ app.post("/events", async (req, res) => {
 
     // WE ARE SENDING "CommentUpdated" TO EVENT BUS
     // BUT FIRST LETS UPDATE DATBASE
-    const comment = commentsByPostId[postId].comments.find((val, index) => {
+    const comment = commentsByPostId[postId].find((val, index) => {
       return val.id === id;
     });
 
