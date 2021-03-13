@@ -27,6 +27,12 @@ app.post("/events", (req, res) => {
   res.send({ status: "OK" });
 });
 
+// THIS IS FOR GETTING ALL EVENTS
+
+app.get("/events", (req, res) => {
+  res.send(events);
+});
+
 const port = 4005;
 
 app.listen(port, () => {
