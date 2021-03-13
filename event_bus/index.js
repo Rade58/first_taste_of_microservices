@@ -5,6 +5,9 @@ const cors = require("cors");
 
 const app = express();
 
+// THIS IS EVENTS DATABASE
+const events = [];
+
 app.use(cors());
 app.use(json());
 app.use(urlencoded({ extended: true }));
