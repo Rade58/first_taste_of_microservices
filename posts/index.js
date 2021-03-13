@@ -23,6 +23,8 @@ app.post("/events", async (req, res) => {
   if (type === "PostCreated") {
     return res.end();
   }
+
+  res.end();
 });
 
 // ---------------------------------
