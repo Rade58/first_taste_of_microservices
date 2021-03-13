@@ -9,35 +9,13 @@ app.use(cors());
 app.use(json());
 app.use(urlencoded({ extended: true }));
 
-// -------- I WILL ADD THIS
-
-const sendNotification = async (url, event) => {
-  /* try { */
-  /* const response =  */ await axios.post(url, event);
-
-  /*   return response;
-  } catch (error) {
-    console.log(error);
-    return "Error";
-  } */
-};
-
-// ---------------------------------------------
-
-app.post("/events", async (req, res) => {
+app.post("/events", (req, res) => {
   const event = req.body;
 
-  // INSTEAD OF MULTIPLE try catch BLOCKS I AM USING
-  // Promise.all
-
-  // await Promise.all([
-  sendNotification("http://localhost:4000/events", event);
-  sendNotification("http://localhost:4001/events", event);
-  sendNotification("http://localhost:4002/events", event);
-  sendNotification("http://localhost:4003/events", event);
-  /* ]).catch((error) => {
-    console.log(error);
-  }); */
+  axios.post("http://localhost:4000/events", event);
+  axios.post("http://localhost:4001/events", event);
+  axios.post("http://localhost:4002/events", event);
+  axios.post("http://localhost:4003/events", event);
 
   res.send({ status: "OK" });
 });

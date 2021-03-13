@@ -43,11 +43,9 @@ app.post("/events", async (req, res) => {
         status: newStatus,
       },
     });
-
-    return res.send({});
   }
 
-  res.end();
+  return res.send({});
 });
 
 app.get("/posts/:id/comments", (req, res) => {
