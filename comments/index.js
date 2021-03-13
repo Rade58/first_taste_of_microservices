@@ -11,7 +11,7 @@ app.use(json());
 app.use(urlencoded({ extended: true }));
 
 const commentsByPostId = {
-  "post id": {
+  /* "post id": {
     id: "post id",
 
     comments: [
@@ -21,7 +21,7 @@ const commentsByPostId = {
         status: "pending",
       },
     ],
-  },
+  }, */
 };
 
 app.get("/posts/:id/comments", (req, res) => {
