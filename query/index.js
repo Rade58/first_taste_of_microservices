@@ -23,65 +23,42 @@ app.get("/posts", async (req, res) => {
   res.send(posts);
 });
 
-app.post("/events", async (req, res) => {
-  const { type, payload } = req.body;
+// ----------- ADDING HELPER FOR HANDLING EVENTS
+// STORRING STUFF ON DIFFERENT EVENTS
 
+const handleEvent = (type, payload) => {
   if (type === "PostCreated") {
-    posts[payload.id] = { ...payload, comments: [] };
+    const { id, title } = payload;
+
+    posts[id] = { id, title, comments: [] };
   }
 
   if (type === "CommentCreated") {
-    // console.log({ payload });
+    const { id, postId, content, status } = payload;
 
-    const postId = payload.postId;
-
-    if (postId) {
-      // WE ARE DOING THIS HERE
-      if (posts[postId] && posts[postId]["comments"]) {
-        posts[postId]["comments"].push({
-          id: payload.id,
-          content: payload.content,
-          postId,
-          // HERE YOU GO
-          status: payload.status,
-        });
-      }
-    }
+    posts[postId].comments.push({ id, content, status });
   }
 
-  // OK HERE WE ARE GOING TO HANDLE "CommentUpdated"
+  if (type === "CommentUpadated") {
+    const { id, postId, status, content } = payload;
 
-  if (type === "CommentUpdated") {
-    const postId = payload.postId;
+    const comments = posts[postId].comments;
 
-    console.log({ type });
+    const comment = comments.find((val, index) => {
+      return val.id === id;
+    });
 
-    // WE ARE UPDATING 'DATABASE' OF QUERY SERVICE
-    console.log(posts[postId] && posts[postId]["comments"]);
-    console.log(posts[postId], postId);
-    console.log({ posts });
-
-    if (posts[postId]) {
-      // let i = 0;
-
-      const comments = posts[postId]["comments"].map((val, index) => {
-        if (val.postId === postId) {
-          return { ...val, status: payload.status };
-        } else {
-          return val;
-        }
-      });
-
-      posts[postId]["comments"] = comments;
-
-      /*
-      console.log({ comment });
-
-      comment.status = payload.status;
-
-      posts[postId]["comments"][i] = comment; */
-    }
+    comment.status = status;
+    comment.content = content;
   }
+};
+
+// ------------------------------------------------
+
+app.post("/events", async (req, res) => {
+  const { type, payload } = req.body;
+
+  handleEvent(type, payload);
 
   res.send({});
 });
