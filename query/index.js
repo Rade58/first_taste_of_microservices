@@ -40,8 +40,10 @@ const handleEvent = (type, payload) => {
     posts[postId].comments.push({ id, content, status });
   }
 
-  if (type === "CommentUpadated") {
+  if (type === "CommentUpdated") {
     const { id, postId, status, content } = payload;
+
+    console.log({ status });
 
     const comments = posts[postId].comments;
 
