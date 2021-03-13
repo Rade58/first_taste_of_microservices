@@ -105,6 +105,27 @@ app.listen(port, async () => {
 
 ```
 
+# NOW WE CAN TEST, BY STARTING ALL SERVICES, BUT NOT QUERY SERVICE
 
+NEW TERMINAL
 
+`yarn start`
+
+NEW TERMINAL
+
+`cd posts` `yarn start`
+
+NEW TERMINAL
+
+`cd comments` `yarn start`
+
+NEW TERMINAL
+
+`cd moderation` `yarn start`
+
+NEW TERMINAL
+
+`cd event_bus` `yarn start`
+
+**WE ARE NOT DOING THIS:** `cd query` `yarn start` **FOR NOW, BECAUSE WE WILL START THIS SERVICE LATER**
 
