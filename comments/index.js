@@ -58,8 +58,9 @@ app.post("/posts/:id/comments", async (req, res) => {
       status: startingStatus,
     },
   });
-
-  res.status(201).send({ id: commentId, content, status: startingStatus });
+  return res
+    .status(201)
+    .send({ id: commentId, content, status: startingStatus });
 });
 
 // HANDLING "CommentModerated"
