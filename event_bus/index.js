@@ -15,6 +15,10 @@ app.use(urlencoded({ extended: true }));
 app.post("/events", (req, res) => {
   const event = req.body;
 
+  // WE WILL STORE INCOMMING EVENT
+  events.push(event);
+  //
+
   axios.post("http://localhost:4000/events", event);
   axios.post("http://localhost:4001/events", event);
   axios.post("http://localhost:4002/events", event);
