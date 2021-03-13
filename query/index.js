@@ -19,7 +19,7 @@ const posts = {
 
 app.get("/posts", async (req, res) => {
   //
-
+  console.log({ posts });
   res.send(posts);
 });
 
@@ -57,22 +57,29 @@ app.post("/events", async (req, res) => {
     console.log({ type });
 
     // WE ARE UPDATING 'DATABASE' OF QUERY SERVICE
+    console.log(posts[postId] && posts[postId]["comments"]);
+    console.log(posts[postId], postId);
+    console.log({ posts });
 
-    if (posts[postId] && posts[postId]["comments"]) {
-      let i = 0;
+    if (posts[postId]) {
+      // let i = 0;
 
-      const comment = posts[postId]["comments"].find((val, index) => {
+      const comments = posts[postId]["comments"].map((val, index) => {
         if (val.postId === postId) {
-          i = index;
-          return true;
+          return { ...val, status: payload.status };
         } else {
-          return false;
+          return val;
         }
       });
 
+      posts[postId]["comments"] = comments;
+
+      /*
+      console.log({ comment });
+
       comment.status = payload.status;
 
-      posts[postId]["comments"][i] = comment;
+      posts[postId]["comments"][i] = comment; */
     }
   }
 

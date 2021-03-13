@@ -29,8 +29,8 @@ app.post("/events", async (req, res) => {
   const { type, payload } = req.body;
 
   if (type === "CommentModerated") {
-    const { postId, status, content, id } = payload;
-    console.log({ status });
+    const { postId, status: newStatus, content, id } = payload;
+    console.log({ newStatus });
 
     // WE ARE SENDING "CommentUpdated" TO EVENT BUS
 
@@ -40,7 +40,7 @@ app.post("/events", async (req, res) => {
         id,
         postId,
         content,
-        status: status,
+        status: newStatus,
       },
     });
 
