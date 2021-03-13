@@ -20,11 +20,11 @@ app.post("/events", async (req, res) => {
   console.log({ type, payload });
 
   // BECAUSE POST SERVICE ALREDY KNOWS THAT POST IS CREATED
-  if (type === "PostCreated") {
+  /* if (type === "PostCreated") {
     return res.end();
   }
-
-  res.end();
+ */
+  res.send({});
 });
 
 // ---------------------------------

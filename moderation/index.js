@@ -31,11 +31,8 @@ app.post("/events", async (req, res) => {
         postId,
       },
     });
-
-    return res.send({});
   }
-
-  res.end();
+  return res.send({});
 });
 
 const port = 4003;
