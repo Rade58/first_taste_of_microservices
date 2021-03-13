@@ -24,9 +24,12 @@ app.get("/posts", async (req, res) => {
   res.send(posts);
 });
 
-// ----------- ADDING HELPER FOR HANDLING EVENTS
-// STORRING STUFF ON DIFFERENT EVENTS
-
+// I ADDED THIS HELPER WHEN I WAS DEBUGGING
+// IT IS OBVIOUS WHT IT'S DOING
+//  BUT THAT IS NOT THE MOST IMPORTAN THING
+// IMPORTANT THING I PLACED IN CALLBACK THAT EXECUTES WHEN SERVER START
+// AT TH EED OF THIS FILE
+// YES I WIL LUSE THIS FUNCTION BACK THERE TOO
 const handleEvent = (type, payload) => {
   if (type === "PostCreated") {
     const { id, title } = payload;
@@ -68,6 +71,20 @@ app.post("/events", async (req, res) => {
 
 const port = 4002;
 
-app.listen(port, () => {
+// IN HERE
+app.listen(port, async () => {
+  // SO WE ARE GOING TO UPDATE THIS DTABASE OF QUERY SERVICE
+  // WITH ALL EVENTS THAT WERE STACKED WHEN THIS SERVICE WAS DOWN
+
+  const response = await axios.get("http://localhost:4005/events");
+
+  const events = response.data;
+
+  events.forEach((event) => {
+    const { type, payload } = event;
+
+    handleEvent(type, payload);
+  });
+
   console.log(`Query Service on: http://localhost:${port}`);
 });
