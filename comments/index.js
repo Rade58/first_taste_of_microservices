@@ -24,30 +24,6 @@ const commentsByPostId = {
   },
 };
 
-// HANDLING "CommentModerated"
-app.post("/events", async (req, res) => {
-  const { type, payload } = req.body;
-
-  if (type === "CommentModerated") {
-    const { postId, status: newStatus, content, id } = payload;
-    console.log({ newStatus });
-
-    // WE ARE SENDING "CommentUpdated" TO EVENT BUS
-
-    await axios.post("http://localhost:4005/events", {
-      type: "CommentUpdated",
-      payload: {
-        id,
-        postId,
-        content,
-        status: newStatus,
-      },
-    });
-  }
-
-  return res.send({});
-});
-
 app.get("/posts/:id/comments", (req, res) => {
   const { id: postId } = req.params;
 
@@ -63,44 +39,59 @@ app.post("/posts/:id/comments", async (req, res) => {
 
   const { content } = req.body;
 
-  const id = randomBytes(4).toString("hex");
+  const commentId = randomBytes(4).toString("hex");
 
-  const status = "pending";
+  const startingStatus = "pending";
 
-  if (commentsByPostId[postId]) {
-    commentsByPostId[postId].comments.push({
-      content,
-      id,
-      status,
-    });
-  } else {
-    commentsByPostId[postId] = {
+  const comments = commentsByPostId[postId] || [];
+
+  comments.push({ id: commentId, content, status: startingStatus });
+
+  commentsByPostId[postId] = comments;
+
+  await axios.post("http://localhost:4005/events", {
+    type: "CommentCreated",
+    payload: {
       postId,
-      comments: [
-        {
-          id,
-          content,
-          status,
-        },
-      ],
-    };
-  }
+      id: commentId,
+      content,
+      status: startingStatus,
+    },
+  });
 
-  try {
+  res.status(201).send({ id: commentId, content, status: startingStatus });
+});
+
+// HANDLING "CommentModerated"
+app.post("/events", async (req, res) => {
+  const { type, payload } = req.body;
+
+  if (type === "CommentModerated") {
+    const { postId, status: newStatus, content, id } = payload;
+    console.log({ newStatus });
+
+    // WE ARE SENDING "CommentUpdated" TO EVENT BUS
+    // BUT FIRST LETS UPDATE DATBASE
+    const comment = commentsByPostId[postId].comments.find((val, index) => {
+      return val.id === id;
+    });
+
+    comment.status = newStatus;
+
+    //
+
     await axios.post("http://localhost:4005/events", {
-      type: "CommentCreated",
+      type: "CommentUpdated",
       payload: {
-        postId,
         id,
+        postId,
         content,
-        status,
+        status: newStatus,
       },
     });
-  } catch (err) {
-    console.error(err, "Couldn't send an event");
   }
 
-  res.status(201).send({ id, content, status });
+  return res.send({});
 });
 
 const port = 4001;
