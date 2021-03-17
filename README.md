@@ -10,11 +10,11 @@ A TOKOM OVOG WORKSHOPA KAD BUDEM UCIO I KUBERNETIS RUNN-OVACU I NEKE DRUGE VERZI
 
 # INSTATICIZIRANJE CONTAINER-A
 
-- `ocker run <ime image-a ili id image-a>`
+- `ocker run <tag image-a ili id image-a>`
 
 # INSTATICIZIRANJE CONTAINERA, UZ MOGUCNOST INPUTA, SA LEPSIM INTERFACEOM, UZ OVERRIDINF STARTUP KOMANDE
 
-- `docker run -it <ime inmage-a ili njegov id> <startup command override>`
+- `docker run -it <tag inmage-a ili njegov id> <startup command override>`
 
 OVDE SE NAJCESCE KORISTI `sh` KAO OVERRIDE STARTUP KOMANDE, KAKO BI MOGAO UCI U CONTAINER SHELL
 
