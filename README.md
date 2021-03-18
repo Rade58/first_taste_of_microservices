@@ -27,3 +27,4 @@ U STVARI TO CE BITI SAMO `package.json` I `src` I `public` FOLDER
 
 NODE MODULES IZ ROOT DIRECTORY-JA MOZES POPPTPUNO DA DELET-UJES
 
+- `cp posts/.dockerignore posts/Dockerfile client`
