@@ -33,3 +33,5 @@ event_bus/node_modules
 query/node_modules
 # moderation
 moderation/node_modules
+# client
+client/node_modules
