@@ -131,7 +131,14 @@ UKLONICU POD
 
 TREBACE MU MALO VREMENA DA GA UKLONI
 
+10 SEKUNDI
+
 ```c
 pod "posts" deleted
 ```
 
+- `kubectl get pods`
+
+```c
+No resources found in default namespace.
+```
