@@ -35,3 +35,6 @@ query/node_modules
 moderation/node_modules
 # client
 client/node_modules
+
+# minicube
+^minicube
