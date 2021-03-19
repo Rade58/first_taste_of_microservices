@@ -162,7 +162,60 @@ NAME    READY   STATUS    RESTARTS   AGE
 posts   1/1     Running   0          68s
 ```
 
+# PRINTING INFORMATION O SAMOM POD-U
 
+- `kubectl describe pod posts`
+
+```sh
+Name:         posts
+Namespace:    default
+Priority:     0
+Node:         minikube/192.168.49.2
+Start Time:   Fri, 19 Mar 2021 20:47:12 +0100
+Labels:       <none>
+Annotations:  <none>
+Status:       Running
+IP:           172.17.0.2
+IPs:
+  IP:  172.17.0.2
+Containers:
+  posts:
+    Container ID:   docker://f3628e2bbcd7ee7f637bc876aff16f6e0f4288e7f9ac7c9b10e6e3c135075c32
+    Image:          radebajic/posts:0.0.1
+    Image ID:       docker://sha256:8d6f9ce5d76b571b66baf837191761c341727f6b041935958936aeb5bed130f1
+    Port:           <none>
+    Host Port:      <none>
+    State:          Running
+      Started:      Fri, 19 Mar 2021 20:47:19 +0100
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from default-token-b5658 (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  default-token-b5658:
+    Type:        Secret (a volume populated by a Secret)
+    SecretName:  default-token-b5658
+    Optional:    false
+QoS Class:       BestEffort
+Node-Selectors:  <none>
+Tolerations:     node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                 node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age    From               Message
+  ----    ------     ----   ----               -------
+  Normal  Scheduled  8m31s  default-scheduler  Successfully assigned default/posts to minikube
+  Normal  Pulled     8m26s  kubelet            Container image "radebajic/posts:0.0.1" already present on machine
+  Normal  Created    8m25s  kubelet            Created container posts
+  Normal  Started    8m24s  kubelet            Started container posts
+
+```
 
 
 
