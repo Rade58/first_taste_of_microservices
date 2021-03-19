@@ -68,6 +68,24 @@ TO SAM TI VEC JEDNOM REKAO (A JEDVA SAM SAZNAO ZA OVO)
 
 - `cd infra/k8s`
 
+- `ls`
+
+```bash
+posts.yaml
+```
+
 KUCAS KOMANDU (KOJA KORISTI ONAJ `kubectl`)
 
-- `kubectl apply -f radebajic/posts:0.0.1`
+- `kubectl apply -f posts.yaml`
+
+BICE INDICATED DA JE POSTS CREATED
+
+KUCAM SLEDECU KOMADU DA PROVERIM DA LI JE ZAISTA CREATED, ILI JOS VAZNIJE DA LI JE U RUNNING STATE-U
+
+- `kubectl get pods`
+
+```c
+NAME    READY   STATUS    RESTARTS   AGE
+posts   1/1     Running   0          1m
+
+```
