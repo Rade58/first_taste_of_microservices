@@ -5,5 +5,4 @@ metadata:
 spec:
   containers:
     - name: posts
-      image: posts
-      imagePullPolicy: IfNotPresent
+      image: radebajic/posts:0.0.1
