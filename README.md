@@ -166,6 +166,8 @@ posts   1/1     Running   0          68s
 
 - `kubectl describe pod posts`
 
+DACE TI NEKI DEBUG INFO IF YOU FEEL THAT SOMETHING IS WRONG WITH THE POD
+
 ```sh
 Name:         posts
 Namespace:    default
@@ -217,5 +219,9 @@ Events:
 
 ```
 
+NJVAZNIJE JE OVAJ INFO PRI DNU: `Events`
 
+TO JE EVENT LOGS
+
+I TO TI MOZE DATI SOME DEBUG INFORMATION
 
