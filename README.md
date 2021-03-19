@@ -77,3 +77,17 @@ pod/posts unchanged
 NAME    READY   STATUS    RESTARTS   AGE
 posts   1/1     Running   1          6h45m
 ```
+
+# SADA CU DA EXECUTE-UJEM COMMAND INSIDE RUNNING POD
+
+- `kubectl exec -it posts sh`
+
+ODNOSNO OTVARAM SHELL INSIDE RUNNING CONTAINER
+
+```sh
+kubectl exec [POD] [COMMAND] is DEPRECATED and will be removed in a future version. Use kubectl exec [POD] -- [COMMAND] instead.
+/app # ls
+Dockerfile         index.js           node_modules       package-lock.json  package.json       yarn.lock
+/app # 
+
+```
