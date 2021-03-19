@@ -142,3 +142,27 @@ pod "posts" deleted
 ```c
 No resources found in default namespace.
 ```
+
+# RKREIRACU POD QUICKLY
+
+NEMOJ DA BRINES ZA IMAGE, ON JE I DALJE U REGISTRY-JU
+
+- `cd infra/k8s`
+
+- `kubectl apply -f posts.yaml`
+
+```c
+pod/posts created
+```
+
+- `kubectl get pods`
+
+```shell
+NAME    READY   STATUS    RESTARTS   AGE
+posts   1/1     Running   0          68s
+```
+
+
+
+
+
