@@ -15,3 +15,15 @@ NAME    READY   STATUS    RESTARTS   AGE
 posts   1/1     Running   0          58m
 ```
 - `k delete pods posts`
+
+# KREIRACU FAJL `posts-depl.yaml`
+
+- `touch infra/k8s/posts-depl.yaml`
+
+SADA NE UZIMAM IZ BUCKETA OF OBJECTS `v1` VEC IZ `apps/v1` (DEPLOYMENT OBJECT JE IZ TOG BUCKET OF DIFFERENT OBJECTS, KOJI SE ZOVE `apps/v1`)
+
+```yaml
+
+```
+
+
