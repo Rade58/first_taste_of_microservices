@@ -91,3 +91,47 @@ Dockerfile         index.js           node_modules       package-lock.json  pack
 /app # 
 
 ```
+
+**AKO BUDES RUNN-OVAO MULTIPLE CONTAINER IN SAME POD, SA OVOM KOMANDOM BICES PROMPTED DA BIRAS CONTAINER**
+
+```
+/app # exit
+
+```
+
+IZASAO SAM I CONTAINER SHELL-A
+
+# UZECU SADA LOGS FROM MY ONLY POD RIGHT NOW
+
+- `kubectl logs posts`
+
+```shell
+> posts@1.0.0 start /app
+> npx nodemon index.js
+
+[nodemon] 2.0.7
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,json
+[nodemon] starting `node index.js`
+listening on: http://localhost:4000
+```
+
+STO ZNACI DA U MOM CONTAINER-U, INSIDE POD, RUNN-UJE MOJ NODE APP
+
+TO VIDIS FROM THE LOGS
+
+# DELETING PODA, MANUALLY
+
+NAJCESCI RAZLOG KADA RADIS OVO JE KADA ZELIS MANUELNO DA RESTART-UJES POD
+
+UKLONICU POD
+
+- `kubectl delete pod posts`
+
+TREBACE MU MALO VREMENA DA GA UKLONI
+
+```c
+pod "posts" deleted
+```
+
