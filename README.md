@@ -1,5 +1,11 @@
 # KUBERNETES SETUP
 
+U OVOM, I SLEDECIM BRANCH-EVIMA PETE SEKCIJE BAVICU SE ORCHESTRATING-OM KOLEKCIJA SERVISA SA KUBERNETES-OM
+
+KUBERNETES JE LAKSE PODESITI N WINDOWS-U ILI MAC-U
+
+MEDJUTIM JA SAM LINUX GUY, I ZATO CU MORATI KORISTITI `minikube` NA LINUX-U
+
 [SETTING UP mini-cube FOR LINUX](https://minikube.sigs.k8s.io/docs/start/)
 
 >> minikube is local Kubernetes, focusing on making it easy to learn and develop for Kubernetes.
