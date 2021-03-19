@@ -39,7 +39,7 @@ I OVA KOMANDA
 
 - `kubectl delete pod <pod name>`
 
-**KREIRANJE OBJEKTA (POD-A)**
+**KREIRANJE OBJEKTA (POD-A, DEPLOYMENTA ILI SERVICE-A)**
 
 - `kubectl apply -f <config file name>`
 
