@@ -97,4 +97,4 @@ MEDJUTIM RECENO JE DA CE cache add BITI DEPRECATED I DA JE BOLJE DA KORISTIS `im
 
 OVO JE DAKLE NESTO STO CE ZAMENITI KOMANDE KKOJE MANGE-UJU IMAGEO,VE, ODNONO POMENUTE KOMANDE VEZANE ZA CAHE
 
-- `minikube image load <name docer image-a>`
+- `minikube image load <name docker image-a>`
