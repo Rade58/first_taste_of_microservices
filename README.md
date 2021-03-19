@@ -67,3 +67,24 @@ A U `template` TI SPECIFICIRAS TACNU KONFIGURACIJU POD-A, KOJE HOCES DA DEPOYMEN
 TU SI RKAO DA ZELIS DA POD IMA label SA VREDNOSCU app: posts
 
 A UNDER spec SU SVE CONFIGURATION OPTIONS POD-A ,KOJE DEPLOYMENT TREBA DA MAKE-UJE
+
+## OVO JE BARE BONES KONFIGURACIJA
+
+POSTOJI JOS MNOGO OPCIJA KOJE SE MOGU PODESITI
+
+# POKUSACU DA APPLY-UJEM OVO TO OUR CLUSTER
+
+- `cd infra/k8s`
+
+- `k apply -f posts-depl.yaml`
+
+```zsh
+deployment.apps/posts-depl created
+```
+
+- `k get deployments`
+
+```zsh
+NAME         READY   UP-TO-DATE   AVAILABLE   AGE
+posts-depl   1/1     1            1           26s
+```
