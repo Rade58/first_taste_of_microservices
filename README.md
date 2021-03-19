@@ -89,3 +89,21 @@ NAME    READY   STATUS    RESTARTS   AGE
 posts   1/1     Running   0          1m
 
 ```
+
+DAKLE POD JE KREIRAN I ON RUNN-UJE
+
+# UNDERSTANDING A SPEC
+
+- `cat infra/k8s/posts.yaml`
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: posts
+spec:
+  containers:
+    - name: posts
+      image: radebajic/posts:0.0.1
+
+```
