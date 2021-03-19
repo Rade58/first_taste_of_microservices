@@ -79,3 +79,11 @@ E SAD MOZES DA OVAKO EXECUTE-UJES ADDING TO MINICUBE REGISTRY:
 STO BI MOGAO OVAKO NAPISATI
 
 - `minikube cache add radebajic/posts:0.0.1`
+
+ISTO TAKO POSTOJ I `minicu=bve cache delete <docker image name>`
+
+MEDJUTIM RECENO JE DA CE cache add BITI DEPRECATED I DA JE BOLJE DA KORISTIS `image load`
+
+# `image load`
+
+- `minikube image load <name docer image-a>`
