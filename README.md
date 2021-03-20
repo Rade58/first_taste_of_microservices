@@ -11,6 +11,8 @@ ODNOSNO ZELIM DA IZBEGNEM DA MORAM MANELNO DA EDITUJEM TAJ FILE, KAKO BI SPECIFI
 SASTOJI SE OD SLEDECIH KORAKA
 
 1. EDITOVATI DEPLOYMENT CONFIG FILE, I TU U POD SPEC-U DEFINISATI DA IMAGE IMA `latest` VERZIJU, ILI DA NE DEFINISES VERZIJU, CIME CE PODRAZUMEVATI DA JE TO `latest`
+   
+SAGRADITI TAKAV DEPLOYMENT SA `kubectl apply -f`
 
 2. ONADA MOZES MODIFIKOVATI TVOJ CODE, TVOJ CODEBASE, DAKLE TO MOZES UPDATE-OVATI (JA DODUSE U PROJEKTU SAMO TO RADIM SA index.js FAJLOM)
 
@@ -65,7 +67,17 @@ spec:
 
 KAO STO VIDIS GORE, ZISTA image VISE NEMA SPECIFIED VERSION
 
-**ENJAM SADA MOJ CODE, ODNONO KAO JA SADA NESTO UPDATE-UJEM MOJ CODEBASE, EDITUJEM FILE**
+MOGU DA BUILD-UJEM OVAJ DEPLOYMENT
+
+- `cd infra/k8s`
+
+- `k apply -f posts-depl.yaml`
+
+```zsh
+deployment.apps/posts-depl configured
+```
+
+**MENJAM SADA MOJ CODE, ODNONO KAO JA SADA NESTO UPDATE-UJEM MOJ CODEBASE, EDITUJEM FILE**
 
 - `code posts/index.js`
 
@@ -120,7 +132,7 @@ const port = 4000;
 
 app.listen(port, () => {
   // IZMENIO SAM CONSOLE LOG, KAO DA JE DRUGA VERZIJE
-  console.log("v16"); // PROMENIO SAM OVO DA JE OVO VERZIJA 16 (RANIJE JE KAO STAJALO 8)
+  console.log("v26"); // PROMENIO SAM OVO DA JE OVO VERZIJA 16 (RANIJE JE KAO STAJALO 8)
   //
 
   console.log(`listening on: http://localhost:${port}`);
@@ -133,6 +145,29 @@ app.listen(port, () => {
 - `cd posts`
 
 - `docker build -t radebajic/posts .`
+
+```zsh
+Sending build context to Docker daemon  56.83kB
+Step 1/6 : FROM node:lts-alpine3.12
+ ---> 8f86419010df
+Step 2/6 : WORKDIR /app
+ ---> Using cache
+ ---> aff0e0561350
+Step 3/6 : COPY ./package.json ./
+ ---> Using cache
+ ---> 37437ca61ccc
+Step 4/6 : RUN npm install
+ ---> Using cache
+ ---> 20382b18ae81
+Step 5/6 : COPY ./ ./
+ ---> 99b4b376042b
+Step 6/6 : CMD ["npm", "start"]
+ ---> Running in bfc4fb619949
+Removing intermediate container bfc4fb619949
+ ---> d798c2a9113b
+Successfully built d798c2a9113b
+Successfully tagged radebajic/posts:latest
+```
 
 IMAGE JE SAGRADJEN
 
@@ -160,15 +195,15 @@ MOJ DOCKER ID JE `radebajic`
 ```zsh
 Using default tag: latest
 The push refers to repository [docker.io/radebajic/posts]
-c8637148601e: Pushed 
-c1c394a7dbc3: Pushed 
-15c53badf04e: Pushed 
-5e4d92dc56e9: Pushed 
-a8e8c71490ec: Mounted from library/node 
-ea79b9f37866: Mounted from library/node 
-62a7f5bbacbd: Mounted from library/node 
-33e8713114f8: Mounted from library/node 
-latest: digest: sha256:68f20c15e2e635e3ef75d861eede6f471a5cdabc931caed9cc56ac39df1cda1a size: 1992
+cd08a0498568: Pushed 
+c1c394a7dbc3: Layer already exists 
+15c53badf04e: Layer already exists 
+5e4d92dc56e9: Layer already exists 
+a8e8c71490ec: Layer already exists 
+ea79b9f37866: Layer already exists 
+62a7f5bbacbd: Layer already exists 
+33e8713114f8: Layer already exists 
+latest: digest: sha256:5c3309406cd9d034ddd1e4916f77ddffdb75f72fec60d147caedcf0c50ac7587 size: 1992
 ```
 
 OTISAO SAM NA MOJ NALOG DOCKER HUB-A I ZISTA JE TAJ IMAGE SADA TAMO
@@ -186,3 +221,17 @@ posts-depl   1/1     1            1           5h1m
 
 - `k rollout restart deployment posts-depl`
 
+```zsh
+deployment.apps/posts-depl restarted
+```
+
+DA SADA VIDIM LOGS POD-A, DA VIDIM DA LI SU SE PROMENE UOPSTE APPLY-OVALE
+
+- `k get pods`
+
+```zsh
+NAME                          READY   STATUS    RESTARTS   AGE
+posts-depl-6967f8d89b-5f75m   1/1     Running   0          87s
+```
+
+- `k logs pod `
