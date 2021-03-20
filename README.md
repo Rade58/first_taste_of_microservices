@@ -8,7 +8,7 @@ TO ZNACI DA AKO NA PRIMER NAPRAVIS PROMENU U posts PROJEKTU **I REBUILD-UJES IMA
 
 JEDAN OD METODA, ZA KOJI CU TI RECI NE KORISTI SE MUCH OFFTEN, ZATO CU TI TO PRVO POKAZATI
 
-# METHOD ONE
+# UPDATING DEPLOYMENT METHOD ONE
 
 KORACI SE SASTOJE OD:
 
@@ -21,6 +21,127 @@ KORACI SE SASTOJE OD:
 4. I RUNN-OVANJE REBUILD-A DEPLOYMENTA SA KOMANDOM
   `kubectl apply -f <depl config file name>`
 
+***
+***
+
 **ISPROBACU SDA OVAJ METOD**
 
+- `code posts/index.js`
 
+SAMO CU UBACITI DODATNO CONSOLE LOG, JER NE ZNAM STA BI DRUGO MENJAO
+
+```js
+const express = require("express");
+const { json, urlencoded } = require("body-parser");
+const { randomBytes } = require("crypto");
+const cors = require("cors");
+const { default: axios } = require("axios");
+
+const app = express();
+
+app.use(cors());
+app.use(json());
+app.use(urlencoded({ extended: true }));
+
+const posts = { someid: { id: "someid", title: "foo bar baz" } };
+
+app.post("/events", async (req, res) => {
+  const { type, payload } = req.body;
+
+  console.log({ type, payload });
+
+  res.send({});
+});
+
+app.get("/posts", (req, res) => {
+  res.status(200).send(posts);
+});
+
+app.post("/posts", async (req, res) => {
+  const { title } = req.body;
+  const id = randomBytes(4).toString("hex");
+  posts[id] = { id, title };
+
+  try {
+    const response = await axios.post("http://localhost:4005/events", {
+      type: "PostCreated",
+      payload: posts[id],
+    });
+  } catch (err) {
+    console.error("Something went wrong", err);
+    res.end();
+  }
+
+  res.status(201).send(posts[id]);
+});
+
+const port = 4000;
+
+app.listen(port, () => {
+  // EVO OVDE SAM DODAO TAJ CONSOLE LOG
+  console.log("v8"); // KAO NAZNAVIO SAM DAJ OVO VERZIJA 8 (BEZVEZE)
+  // ZAMILI KAO DA TI INTEND-UJES DA DEPLOY-UJES OSMU VERIJU OVOG SERVISA
+  //
+
+  console.log(`listening on: http://localhost:${port}`);
+});
+
+```
+
+**REBUILD-OVACU IMAGE, A TADA CU ZADATI I NOVU VERZIJU ZA IMAGE**
+
+ZNAS GDE TI JE DOCKERFILE (TAMO RUNN-UJES KOMANDU)
+
+- `cd posts`
+
+- `docker build -t radebajic/posts:0.0.8 .`
+
+- `docker images`
+
+```zsh
+REPOSITORY                    TAG              IMAGE ID       CREATED          SIZE
+radebajic/posts               0.0.8            4f4748b6edc8   51 seconds ago   125MB
+radebajic/posts               0.0.1            8d6f9ce5d76b   45 hours ago     125MB
+node                          lts-alpine3.12   8f86419010df   8 days ago       117MB
+gcr.io/k8s-minikube/kicbase   v0.0.18          a776c544501a   3 weeks ago      1.08GB
+```
+
+**ONO STO RADIM SADA JESTE DA DODAM TAJ IMAGE U REGISTRY MINIKUBE-A** (RANIJE SAM TO RDIO SAMO SA `minikube cache add`, ALI OVO JE U FAZI DEPRECATION- I ZATO CU KORISTITI `minikube image load`) (MADA MI IZGLEDA DA minikube cache add BRZE RADI ,I DA LOAD NE RADI BAS DOBRO ZATO IPAK KORISTIM PRVU OPCIJU)
+
+- `minikube cache add radebajic/posts:0.0.8`
+
+- `minikube cache list`
+
+```zsh
+posts
+radebajic/posts:0.0.1
+radebajic/posts:0.0.8
+```
+
+**SADA MANJEM DEPLOYMNT CONFIG FILE**
+
+SAMO MENJAM VERZIJU IMAGE-A
+
+- `code infra/k8s/posts-depl.yaml`
+
+KAO STO VIDIS UMESTO 1 JA SAM STAVIO 8
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: posts-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: posts
+  template:
+    metadata:
+      labels:
+        app: posts
+    spec:
+      containers:
+        - name: posts
+          image: radebajic/posts:0.0.8
+```

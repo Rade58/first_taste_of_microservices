@@ -12,22 +12,13 @@ app.use(urlencoded({ extended: true }));
 
 const posts = { someid: { id: "someid", title: "foo bar baz" } };
 
-// I WILL ADD HANDLER FOR /events ROUTE
 app.post("/events", async (req, res) => {
   const { type, payload } = req.body;
 
-  // I WILL JUST CONSOLE LOG STUFF FOR NOW
   console.log({ type, payload });
 
-  // BECAUSE POST SERVICE ALREDY KNOWS THAT POST IS CREATED
-  /* if (type === "PostCreated") {
-    return res.end();
-  }
- */
   res.send({});
 });
-
-// ---------------------------------
 
 app.get("/posts", (req, res) => {
   res.status(200).send(posts);
@@ -54,5 +45,10 @@ app.post("/posts", async (req, res) => {
 const port = 4000;
 
 app.listen(port, () => {
+  // EVO OVDE SAM DODAO TAJ CONSOLE LOG
+  console.log("v8"); // KAO NAZNAVIO SAM DAJ OVO VERZIJA 8 (BEZVEZE)
+  // ZAMILI KAO DA TI INTEND-UJES DA DEPLOY-UJES OSMU VERIJU OVOG SERVISA
+  //
+
   console.log(`listening on: http://localhost:${port}`);
 });
