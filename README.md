@@ -145,3 +145,15 @@ spec:
         - name: posts
           image: radebajic/posts:0.0.8
 ```
+
+**SADA MORAM OPET DA REBUILD-UJEM DEPLOYMENT, SA GORNJIM FILE-OM**
+
+- `cd infra/k8s`
+
+- `k apply -f posts-depl.yaml`
+
+```zsh
+deployment.apps/posts-depl configured
+```
+
+
