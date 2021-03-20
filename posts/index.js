@@ -45,9 +45,8 @@ app.post("/posts", async (req, res) => {
 const port = 4000;
 
 app.listen(port, () => {
-  // EVO OVDE SAM DODAO TAJ CONSOLE LOG
-  console.log("v8"); // KAO NAZNAVIO SAM DAJ OVO VERZIJA 8 (BEZVEZE)
-  // ZAMILI KAO DA TI INTEND-UJES DA DEPLOY-UJES OSMU VERIJU OVOG SERVISA
+  // IZMENIO SAM CONSOLE LOG, KAO DA JE DRUGA VERZIJE
+  console.log("v16"); // PROMENIO SAM OVO DA JE OVO VERZIJA 16 (RANIJE JE KAO STAJALO 8)
   //
 
   console.log(`listening on: http://localhost:${port}`);

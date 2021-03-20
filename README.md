@@ -16,17 +16,25 @@ SASTOJI SE OD SLEDECIH KORAKA
 
 3. SAGRADI DOCKER IMAGE, NE SPECIFICIRAJUCI VERZIJU, I IMPLICITNO CE SE KAO VERZIJA PRIHVATITI `latest`
 
-4. PUSH-UJ IMAGE DO DOCKER HUB-A
+4. PUSH-UJ IMAGE DO DOCKER HUB-A (NE ZABORAVI DA ODRADIS `docker login` KOMANDU)
 
+TO SE RADI POKRETANJEM KOMANDE `docker push`
+
+- `docker push <ime koje se sastoji od tvog dockerhub id pa kroz ime image-a>`
+
+***
 ***
 
 ZBOG TOGA SIGURNO NECU VISE MORATI DA GURAM DOCKER IMAGE U MINICUBE CACHE NA MOM RACUNARU (STO ZNACI DA OVOG PUT NE KORISTIM `minikube cache add` ILI `minikube image load`)
 
 ***
+***
 
 5. I MORA SE RUNN-OVATI POSEBNA KOMANDA 
 
+- `kubectl rollout restart deployment <ime deployment-a>`
 
+NARAVNO IME MOZES OTKRITI (AKO SI GA ZABORAVIO NARAVNO), KORISCENJEM `k get deployments`
 
 
 
