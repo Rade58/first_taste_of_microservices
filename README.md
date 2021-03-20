@@ -61,6 +61,8 @@ ISTO TAKO VIDIS DA JE ONAJ UKLONJENI POD BIO STAR 16 SATI, DOK JE OVAJ NOVI STAA
 
 # DESCRIBING DEPLOYMMENT
 
+INFO ABOUT SPECIFIC DEPLOYMENT
+
 - `k describe deployment posts-depl`
 
 ```zsh
@@ -96,4 +98,18 @@ Events:
   ----    ------             ----  ----                   -------
   Normal  ScalingReplicaSet  16h   deployment-controller  Scaled up replica set posts-depl-d955f9b4b to 1
 ```
+
+KORISNO ZA DEBUGGING
+
+# KREIRANJE DEPLOYMENTA
+
+TO SAM TI VEC POKAZAO
+
+TAMO GDE JE YAML CONFIG RUNN-UJES
+
+- `k apply deployment <ime yaml config file-a>`
+
+# UKLANJNJE DEPLOYMENT-A
+
+- `k delete deployment <deployment name>`
 
