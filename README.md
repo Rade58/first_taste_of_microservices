@@ -10,7 +10,7 @@ BICE TI ODMAH JASNO KADA UPOTREBIM NEKE OD NJIH
 
 **OPET TI NAPOMINJEM DA JE `k` MOJ ALIAS KOJI SAM NAPRAVIO, DA NE BI KUCAO `kubectl` STAALNO KADA RUNN-UJEM KUBERNETES COMMANDS**
 
-## LISTING ALL RUNNING DEPLOYMENTS INSIDE OUR CLUSTER
+# LISTING ALL RUNNING DEPLOYMENTS INSIDE OUR CLUSTER
 
 - `k get deployments`
 
@@ -107,9 +107,55 @@ TO SAM TI VEC POKAZAO
 
 TAMO GDE JE YAML CONFIG RUNN-UJES
 
-- `k apply deployment <ime yaml config file-a>`
+- `k apply <ime yaml config file-a>`
 
 # UKLANJNJE DEPLOYMENT-A
 
 - `k delete deployment <deployment name>`
+
+## SADA CU DA UKLONIM MOJ DEPLOYMENT
+
+- `k delete deployment posts-depl`
+
+```zsh
+deployment.apps "posts-depl" deleted
+```
+
+SVE STO JE ASSOCITED SA OVIM DEPLOYMENTOM JE NESTALO
+
+VIDECES DA NEMA ASSOCIATED PODS
+
+- `k get pods`
+
+```zsh
+No resources found in default namespace.
+```
+
+DAKLE NEMA VISE PODS
+
+## RECREATE-OVACU MOJ DEPLOYMENT
+
+- `cd infra/k8s`
+
+- `k apply -f posts-depl.yaml`
+
+```zsh
+deployment.apps/posts-depl created
+```
+
+- `k get deployments`
+
+```zsh
+NAME         READY   UP-TO-DATE   AVAILABLE   AGE
+posts-depl   1/1     1            1           61s
+```
+
+- `k get pods`
+
+```zsh
+NAME                         READY   STATUS    RESTARTS   AGE
+posts-depl-d955f9b4b-tlgp4   1/1     Running   0          64s
+```
+
+
 
