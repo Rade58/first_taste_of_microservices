@@ -46,7 +46,7 @@ const port = 4000;
 
 app.listen(port, () => {
   // IZMENIO SAM CONSOLE LOG, KAO DA JE DRUGA VERZIJE
-  console.log("v26"); // PROMENIO SAM OVO DA JE OVO VERZIJA 16 (RANIJE JE KAO STAJALO 8)
+  console.log("v46"); // PROMENIO SAM OVO DA JE OVO VERZIJA 16 (RANIJE JE KAO STAJALO 8)
   //
 
   console.log(`listening on: http://localhost:${port}`);

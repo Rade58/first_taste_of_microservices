@@ -1,5 +1,27 @@
 # PREFERRED WAY OF UPDATING DEPLOYMENT
 
+***
+***
+
+PRE NEGO STO BUDES RADIO SVE OVO ,NAJBOLJE BI BILO DA CLEAN-UJES THINGS AROUND, JER VEC IMAM NEKOLIKO IMAGE-OVA, KOJI POCINJU SA `radebajic/posts` I IMAJU PRIDODATU VERZIJU, A MOZDA I NEMAJU
+
+- `docker images`
+
+I SVE IMAGE-OVE, KOJI IMAJU TAG KAKAV SAM TI REKAO UKLANJAM SA
+
+- `docker rmi <image id> <image id>` (MOGU UKLONITI VISE ODJEDNOM)
+
+POCECU FRESH TAKO STO CU UNISTITI I DEPLOYMENT
+
+- `k get deployments`
+
+- `k delete deployment posts-depl`
+
+**RADIM SVE OVO U SUSTINI JER E SECAM DA SU MI SE DSILO TO DA SE KORISTE POGRESNE STVARI I DA ZELJENI CHANG-OVI NEKAD NISU DONSILLI NIKAKV EFEKAT, JER SE CHANGE USTVARI APPLY-OVAO NA NESTO POTPUNO DRUGO**
+
+***
+***
+
 U PROSLOM BRANCHU POKAZAO SAM NACIN UPDATINGA, PRI KOJEM SE MORA SPECIFICIRATI NOVI IMAGE INSIDE DEPLOYMENT CONFIG-A (YAML FILE-A)
 
 ODNOSNO ZELIM DA IZBEGNEM DA MORAM MANELNO DA EDITUJEM TAJ FILE, KAKO BI SPECIFICIRAO DRUGU VERZIJU IMAGE-A, JER MOZE A SE DESI TYPO ILI DA SE UNESE POGRESAN VERSION NUMBER
@@ -73,10 +95,6 @@ MOGU DA BUILD-UJEM OVAJ DEPLOYMENT
 
 - `k apply -f posts-depl.yaml`
 
-```zsh
-deployment.apps/posts-depl configured
-```
-
 **MENJAM SADA MOJ CODE, ODNONO KAO JA SADA NESTO UPDATE-UJEM MOJ CODEBASE, EDITUJEM FILE**
 
 - `code posts/index.js`
@@ -132,7 +150,7 @@ const port = 4000;
 
 app.listen(port, () => {
   // IZMENIO SAM CONSOLE LOG, KAO DA JE DRUGA VERZIJE
-  console.log("v26"); // PROMENIO SAM OVO DA JE OVO VERZIJA 16 (RANIJE JE KAO STAJALO 8)
+  console.log("v46"); // PROMENIO SAM OVO DA JE OVO VERZIJA 16 (RANIJE JE KAO STAJALO 8)
   //
 
   console.log(`listening on: http://localhost:${port}`);
@@ -195,15 +213,16 @@ MOJ DOCKER ID JE `radebajic`
 ```zsh
 Using default tag: latest
 The push refers to repository [docker.io/radebajic/posts]
-cd08a0498568: Pushed 
-c1c394a7dbc3: Layer already exists 
-15c53badf04e: Layer already exists 
-5e4d92dc56e9: Layer already exists 
-a8e8c71490ec: Layer already exists 
-ea79b9f37866: Layer already exists 
-62a7f5bbacbd: Layer already exists 
-33e8713114f8: Layer already exists 
-latest: digest: sha256:5c3309406cd9d034ddd1e4916f77ddffdb75f72fec60d147caedcf0c50ac7587 size: 1992
+c8637148601e: Pushed 
+c1c394a7dbc3: Pushed 
+15c53badf04e: Pushed 
+5e4d92dc56e9: Pushed 
+a8e8c71490ec: Mounted from library/node 
+ea79b9f37866: Mounted from library/node 
+62a7f5bbacbd: Mounted from library/node 
+33e8713114f8: Mounted from library/node 
+latest: digest: 
+size: 1992
 ```
 
 OTISAO SAM NA MOJ NALOG DOCKER HUB-A I ZISTA JE TAJ IMAGE SADA TAMO
@@ -227,11 +246,42 @@ deployment.apps/posts-depl restarted
 
 DA SADA VIDIM LOGS POD-A, DA VIDIM DA LI SU SE PROMENE UOPSTE APPLY-OVALE
 
-- `k get pods`
+- `k get deployments`
 
 ```zsh
-NAME                          READY   STATUS    RESTARTS   AGE
-posts-depl-6967f8d89b-5f75m   1/1     Running   0          87s
+NAME         READY   UP-TO-DATE   AVAILABLE   AGE
+posts-depl   1/1     1            1           5h19m
 ```
 
-- `k logs pod `
+- `k get pods`
+
+```zshh
+NAME                          READY   STATUS    RESTARTS   AGE
+posts-depl-57f6cf45fb-smssq   1/1     Running   0          55s
+```
+
+- `k logs posts-depl-57f6cf45fb-smssq`
+
+```zsh
+> posts@1.0.0 start /app
+> npx nodemon index.js
+
+[nodemon] 2.0.7
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,json
+[nodemon] starting `node index.js`
+v46
+listening on: http://localhost:4000
+
+```
+
+VIDIM v46 DAKLE USPENO SU SE SVE PROMENE PPLY-OVALE
+
+# TI SADA VISE NE MORAS DA MENJAS I DA EDITUJES DEPLOYMENT CONFIG FILE
+
+DAKLE TO SAM RADIO SAMO JEDNOM, KAKO BI PODESIO RIGHT IMAGE, ODNOSNO DA NEMA VRZIJE ZA IMAGE OD KOJEG PRAVI POD (ILI DA TA VERZIJA BUDE SPECIFIED SA `latest`)
+
+
+
+
