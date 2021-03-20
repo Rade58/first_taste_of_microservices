@@ -150,7 +150,7 @@ const port = 4000;
 
 app.listen(port, () => {
   // IZMENIO SAM CONSOLE LOG, KAO DA JE DRUGA VERZIJE
-  console.log("v46"); // PROMENIO SAM OVO DA JE OVO VERZIJA 16 (RANIJE JE KAO STAJALO 8)
+  console.log("v46"); // PROMENIO SAM OVO DA JE OVO VERZIJA 46 (RANIJE JE KAO STAJALO 8)
   //
 
   console.log(`listening on: http://localhost:${port}`);
@@ -280,8 +280,109 @@ VIDIM v46 DAKLE USPENO SU SE SVE PROMENE PPLY-OVALE
 
 # TI SADA VISE NE MORAS DA MENJAS I DA EDITUJES DEPLOYMENT CONFIG FILE
 
-DAKLE TO SAM RADIO SAMO JEDNOM, KAKO BI PODESIO RIGHT IMAGE, ODNOSNO DA NEMA VRZIJE ZA IMAGE OD KOJEG PRAVI POD (ILI DA TA VERZIJA BUDE SPECIFIED SA `latest`)
+DAKLE TO (BUILDING DEPLOYMENTA SA CONFIG FILE-OM) SAM RADIO SAMO JEDNOM, KAKO BI ,PORED OSTALOG, PODESIO I RIGHT IMAGE, ODNOSNO DA NEMA VRZIJE ZA IMAGE OD KOJEG DEPLOYMENT GENERISE POD (ILI DA TA VERZIJA BUDE SPECIFIED SA `latest`)
 
+1. **DAKLE SADA KRECEM TAKO STO CU EDITOVATI MOJ CODEBASE, DAKLE KAO DA JA VRSIM DEVELOPMENT, DAKLE MENJAM NEKI FILE**
 
+- `code posts/index.js`
 
+```js
+const express = require("express");
+const { json, urlencoded } = require("body-parser");
+const { randomBytes } = require("crypto");
+const cors = require("cors");
+const { default: axios } = require("axios");
 
+const app = express();
+
+app.use(cors());
+app.use(json());
+app.use(urlencoded({ extended: true }));
+
+const posts = { someid: { id: "someid", title: "foo bar baz" } };
+
+app.post("/events", async (req, res) => {
+  const { type, payload } = req.body;
+
+  console.log({ type, payload });
+
+  res.send({});
+});
+
+app.get("/posts", (req, res) => {
+  res.status(200).send(posts);
+});
+
+app.post("/posts", async (req, res) => {
+  const { title } = req.body;
+  const id = randomBytes(4).toString("hex");
+  posts[id] = { id, title };
+
+  try {
+    const response = await axios.post("http://localhost:4005/events", {
+      type: "PostCreated",
+      payload: posts[id],
+    });
+  } catch (err) {
+    console.error("Something went wrong", err);
+    res.end();
+  }
+
+  res.status(201).send(posts[id]);
+});
+
+const port = 4000;
+
+app.listen(port, () => {
+  // EVO SADA SAM OPET PROMENIO STA CE SE OVDE STAMPATI
+  console.log("v108"); // PROMENIO SAM OVO DA JE OVO VERZIJA 108 (RANIJE JE KAO STAJALO 46)
+  //
+
+  console.log(`listening on: http://localhost:${port}`);
+});
+```
+
+2. **NAKON OVOGA REBUILD-UJEM IMAGE**
+
+- `cd posts`
+
+- `docker build -t radebajic/posts .`
+
+3. **ONDA PUSH-UJEM IMAGE TO DOCKER HUB**
+
+- `docker push radebajic/posts`
+
+4. **SADA MOGU TAKORECI DA PULL-UJM IMAGE, I RESTART-UJEM DEPLOYMENT, CIME BI TREBALO DA SE NOVI IMAGE KORISTI KAO BLUEPRINT ZA PRAVLJENJE POD-A, OVOG DEPLOYMENT-A**
+
+- `kubectl get deployments`
+
+- `kubectl rollout restart deployment posts-depl`
+
+*I MOGU DA IZVRSIM PROVERU*
+
+- `k get pods`
+
+```zsh
+NAME                          READY   STATUS    RESTARTS   AGE
+posts-depl-55b9986456-g2gg4   1/1     Running   0          51s
+```
+
+- `k logs posts-depl-55b9986456-g2gg4`
+
+I ZAISTA DOLE PISE *v108*
+
+```zsh
+> posts@1.0.0 start /app
+> npx nodemon index.js
+
+[nodemon] 2.0.7
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,json
+[nodemon] starting `node index.js`
+v108
+listening on: http://localhost:4000
+
+```
+
+STO ZNACI DA SVE FUNKCIONISE, ODNOSNO DA JE DEPLOYMAENT USPESNO UPDATED, I DA POD UNUTAR NJE RUNN-UJE CONTAINER NAPRAVLJEN OD PRAVOG IMAGE-A

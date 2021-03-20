@@ -45,8 +45,8 @@ app.post("/posts", async (req, res) => {
 const port = 4000;
 
 app.listen(port, () => {
-  // IZMENIO SAM CONSOLE LOG, KAO DA JE DRUGA VERZIJE
-  console.log("v46"); // PROMENIO SAM OVO DA JE OVO VERZIJA 16 (RANIJE JE KAO STAJALO 8)
+  // EVO SADA SAM OPET PROMENIO STA CE SE OVDE STAMPATI
+  console.log("v108"); // PROMENIO SAM OVO DA JE OVO VERZIJA 108 (RANIJE JE KAO STAJALO 46)
   //
 
   console.log(`listening on: http://localhost:${port}`);
