@@ -168,3 +168,10 @@ ZATO TI JE SADA IZASAO MESSAGE DA JE DEPLOYMENT CONFIGURED, A RANIJE KADA SI PRV
 NAME         READY   UP-TO-DATE   AVAILABLE   AGE
 posts-depl   1/1     1            1           120m
 ```
+
+- `k get pods`
+
+```zsh
+NAME                          READY   STATUS    RESTARTS   AGE
+posts-depl-69657dbfbf-z9d4m   1/1     Running   0          6m18s
+```
