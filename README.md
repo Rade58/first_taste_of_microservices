@@ -30,16 +30,159 @@ ZBOG TOGA SIGURNO NECU VISE MORATI DA GURAM DOCKER IMAGE U MINICUBE CACHE NA MOM
 ***
 ***
 
-5. I MORA SE RUNN-OVATI POSEBNA KOMANDA 
+5. I MORA SE RUNN-OVATI POSEBNA KOMANDA, KOJOM CE SE NA KRAJU IZVRSITI UPDATING DEPLOYMENTA 
 
 - `kubectl rollout restart deployment <ime deployment-a>`
 
 NARAVNO IME MOZES OTKRITI (AKO SI GA ZABORAVIO NARAVNO), KORISCENJEM `k get deployments`
 
+# SADA CU DA ISPROBAM SVE OVE KORAKE
 
+**MENJAM IMAGE, KAKO NE BI IMAO VERZIJU SPECIFICIRANU ZA IAMGE KOJIM CE SE PRAVITI POD**
 
+- `code infra/k8s/posts-depl.yaml`
 
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: posts-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: posts
+  template:
+    metadata:
+      labels:
+        app: posts
+    spec:
+      containers:
+        - name: posts
+          image: radebajic/posts
 
+```
 
+KAO STO VIDIS GORE, ZISTA image VISE NEMA SPECIFIED VERSION
 
+**ENJAM SADA MOJ CODE, ODNONO KAO JA SADA NESTO UPDATE-UJEM MOJ CODEBASE, EDITUJEM FILE**
+
+- `code posts/index.js`
+
+USTVARI SAMO CU PROMENITI ONAJ STRING KOJI SAM STMAPAO U CALLBACK-U
+
+```js
+const express = require("express");
+const { json, urlencoded } = require("body-parser");
+const { randomBytes } = require("crypto");
+const cors = require("cors");
+const { default: axios } = require("axios");
+
+const app = express();
+
+app.use(cors());
+app.use(json());
+app.use(urlencoded({ extended: true }));
+
+const posts = { someid: { id: "someid", title: "foo bar baz" } };
+
+app.post("/events", async (req, res) => {
+  const { type, payload } = req.body;
+
+  console.log({ type, payload });
+
+  res.send({});
+});
+
+app.get("/posts", (req, res) => {
+  res.status(200).send(posts);
+});
+
+app.post("/posts", async (req, res) => {
+  const { title } = req.body;
+  const id = randomBytes(4).toString("hex");
+  posts[id] = { id, title };
+
+  try {
+    const response = await axios.post("http://localhost:4005/events", {
+      type: "PostCreated",
+      payload: posts[id],
+    });
+  } catch (err) {
+    console.error("Something went wrong", err);
+    res.end();
+  }
+
+  res.status(201).send(posts[id]);
+});
+
+const port = 4000;
+
+app.listen(port, () => {
+  // IZMENIO SAM CONSOLE LOG, KAO DA JE DRUGA VERZIJE
+  console.log("v16"); // PROMENIO SAM OVO DA JE OVO VERZIJA 16 (RANIJE JE KAO STAJALO 8)
+  //
+
+  console.log(`listening on: http://localhost:${port}`);
+});
+
+```
+
+**MOGU SAGRADITI DOCKER IMAGE**
+
+- `cd posts`
+
+- `docker build -t radebajic/posts .`
+
+IMAGE JE SAGRADJEN
+
+- `docker images`
+
+```zsh
+REPOSITORY                    TAG              IMAGE ID       CREATED         SIZE
+radebajic/posts               latest           18c3cff469b6   2 minutes ago   125MB
+radebajic/posts               0.0.8            4f4748b6edc8   2 hours ago     125MB
+radebajic/posts               0.0.1            8d6f9ce5d76b   2 days ago      125MB
+node                          lts-alpine3.12   8f86419010df   8 days ago      117MB
+gcr.io/k8s-minikube/kicbase   v0.0.18          a776c544501a   3 weeks ago     1.08GB
+```
+
+**E SADA PUSH-UJEM IMAGE U [DOCKER HUB](https://hub.docker.com/)**
+
+JA SAM VEC NAPRAVIO NALOG NA DOCKER HUB-U, I MOZES SE LOG-OVATI KROZ COMMAND LINE GDE CES BITI PROMPTED DA UNESES SIFRU I TVOJ DOCKER ID
+
+MOJ DOCKER ID JE `radebajic`
+
+- `docker login` (MISLIM D OVO TREBA DA BI UOPSTE MOGAO DA PUSH-UJES)
+
+- `docker push radebajic/posts`
+
+```zsh
+Using default tag: latest
+The push refers to repository [docker.io/radebajic/posts]
+c8637148601e: Pushed 
+c1c394a7dbc3: Pushed 
+15c53badf04e: Pushed 
+5e4d92dc56e9: Pushed 
+a8e8c71490ec: Mounted from library/node 
+ea79b9f37866: Mounted from library/node 
+62a7f5bbacbd: Mounted from library/node 
+33e8713114f8: Mounted from library/node 
+latest: digest: sha256:68f20c15e2e635e3ef75d861eede6f471a5cdabc931caed9cc56ac39df1cda1a size: 1992
+```
+
+OTISAO SAM NA MOJ NALOG DOCKER HUB-A I ZISTA JE TAJ IMAGE SADA TAMO
+
+**I SADA USTVARI JA RUNN-UJEM `kubectl rollout restart deployment` KOMANDU**
+
+ALI PRVO DA UZEM DEPLOYMENT TAG
+
+- `k get deployments`
+
+```zsh
+NAME         READY   UP-TO-DATE   AVAILABLE   AGE
+posts-depl   1/1     1            1           5h1m
+```
+
+- `k rollout restart deployment posts-depl`
 
