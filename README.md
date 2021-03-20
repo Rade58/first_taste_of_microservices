@@ -36,11 +36,36 @@ Server Version: version.Info{Major:"1", Minor:"20", GitVersion:"v1.20.2", GitCom
 
 # STARTOVACU minicube
 
+- `minikube status`
+
+VIDECES DA CE PISATI DA NIJE STARTED
+
+```zsh
+minikube
+type: Control Plane
+host: Stopped
+kubelet: Stopped
+apiserver: Stopped
+kubeconfig: Stopped
+timeToStop: Nonexistent
+
+```
+
+PA CU JA DA STARTUJEM minikube
+
 - `minicube start`
 
 USPESNO JE STARTED
 
 MOZE BITI I STOPITRAN SA `stop`
+
+MOZES DA GA STOPIRAAS PRE NEGO STO BUDES GASIO RACUNAR (NE ZNAM DA LI MORAS ALI TREABLO BI)
+
+**ON NECE BITI STARTED NAKON PALJENJA RACUNARA, TAKO JE I BOLJE, DA MI DZABE NE BI USPORAVALO RACUNAR I JELO RESURSE**
+
+PA KAD UPALIS RACUNAR I ZELISA DA RADIS SA minikube, STARTUJ GA SA
+
+- `minikube start`
 
 # POSTOJI JEDNA MOZDA NEZELJNA STVAR, KOJU SAM SAZNAO U PROLAZU
 
