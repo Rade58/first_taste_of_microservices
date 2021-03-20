@@ -175,3 +175,27 @@ posts-depl   1/1     1            1           120m
 NAME                          READY   STATUS    RESTARTS   AGE
 posts-depl-69657dbfbf-z9d4m   1/1     Running   0          6m18s
 ```
+
+# DA BI VIDEO DA LI SE CHANGE ZAISTAA APPLY-OVAO, MORACU DA POSEGNEM STAMPANJU LOGOVA IZ POD-A
+
+TO JE ZATO STO SAM CONSOLE LOG STAVIO U ONAJ CALLBACK, KOJI SE IZVRSI NAKON USPOSTAVLJANJA NODE SERVER-A
+
+- `k logs posts-depl-69657dbfbf-z9d4m`
+
+```zsh
+> posts@1.0.0 start /app
+> npx nodemon index.js
+
+[nodemon] 2.0.7
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,json
+[nodemon] starting `node index.js`
+v8
+listening on: http://localhost:4000
+
+```
+
+**I ZAISTA, ONO v8 JE STAMPANO**
+
+STO ZNACI DA SAM USPESNO UPDATE-OVAO DEPLOYMENT
