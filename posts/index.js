@@ -30,11 +30,10 @@ app.post("/posts", async (req, res) => {
   posts[id] = { id, title };
 
   try {
-
-    // EVO OVO JE PROBLEM
-    //  OVAJ URL NE FUNKCIONISE AKO ZNAM DA JE EVENT BUS
-    // USTVARO CONTAINERIZOVAN INSIDE POD
-    const response = await axios.post("http://localhost:4005/events", {
+    // UMESTO OVOGA
+    // const response = await axios.post("http://localhost:4005/events", {
+    //  PISEM OVO (NE ZABORAVI /events)
+    const response = axios.post("http://event-bus-srv:4005/events", {
       type: "PostCreated",
       payload: posts[id],
     });
@@ -49,9 +48,7 @@ app.post("/posts", async (req, res) => {
 const port = 4000;
 
 app.listen(port, () => {
-  // EVO SADA SAM OPET PROMENIO STA CE SE OVDE STAMPATI
-  console.log("v108"); // PROMENIO SAM OVO DA JE OVO VERZIJA 108 (RANIJE JE KAO STAJALO 46)
-  //
+  console.log("v108");
 
   console.log(`listening on: http://localhost:${port}`);
 });

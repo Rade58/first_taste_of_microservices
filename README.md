@@ -76,9 +76,8 @@ app.post("/posts", async (req, res) => {
 const port = 4000;
 
 app.listen(port, () => {
-  // EVO SADA SAM OPET PROMENIO STA CE SE OVDE STAMPATI
-  console.log("v108"); // PROMENIO SAM OVO DA JE OVO VERZIJA 108 (RANIJE JE KAO STAJALO 46)
-  //
+  
+  console.log("v108");
 
   console.log(`listening on: http://localhost:${port}`);
 });
@@ -154,3 +153,82 @@ I TAKO DA AKO SALJES REQUEST PREMA event_bus MIKROSERVISU, ONDA TO RADIS AGAINST
 
 - `http://event-bus-srv:4005`
 
+# ZATO TREBA DA UPDATE-UJEM SVE index.js FAJLOVE MOJIH MIKROSERF=VISA, KAKO BI DEFINISAO CORRECT UL-OVE AGAINST AXIOS MAKES REQUESTS
+
+JA CU TO ODRADITI SADA ZA posts MIKROSERVIS I ZA event_bus
+
+TO JE ZATO STO NISAM BUILD-OVAO IMAGE-OVE ZA OSTALE MICROSERVISE, I NISAM NAPRAVIO DEPLOYMENTS ZA NJIH I NISAM NAPRAVIO CLUSTER ID KUBERNETES SERVICE-OVE
+
+ADA OVO RADIS OBOVEZNO CHECK-UJ SPELLING, I OBOVAZNE GLEDAJ DA LI PISES CORRECT PORT U URL-U
+
+A OVA KOMANDA TI SVE TO POMAZE, JER MOZES DA VIDIS SVE SERVICE-OVE
+
+- `k get services`
+
+A SADA DA POCNEM SA REDEFINISANJEM CODE-A
+
+- `code posts/index.js`
+
+```js
+const express = require("express");
+const { json, urlencoded } = require("body-parser");
+const { randomBytes } = require("crypto");
+const cors = require("cors");
+const { default: axios } = require("axios");
+
+const app = express();
+
+app.use(cors());
+app.use(json());
+app.use(urlencoded({ extended: true }));
+
+const posts = { someid: { id: "someid", title: "foo bar baz" } };
+
+app.post("/events", async (req, res) => {
+  const { type, payload } = req.body;
+
+  console.log({ type, payload });
+
+  res.send({});
+});
+
+app.get("/posts", (req, res) => {
+  res.status(200).send(posts);
+});
+
+app.post("/posts", async (req, res) => {
+  const { title } = req.body;
+  const id = randomBytes(4).toString("hex");
+  posts[id] = { id, title };
+
+  try {
+    // UMESTO OVOGA
+    // const response = await axios.post("http://localhost:4005/events", {
+    //  PISEM OVO (NE ZABORAVI /events)
+    const response = axios.post("http://event-bus-srv:4005/events", {
+      type: "PostCreated",
+      payload: posts[id],
+    });
+  } catch (err) {
+    console.error("Something went wrong", err);
+    res.end();
+  }
+
+  res.status(201).send(posts[id]);
+});
+
+const port = 4000;
+
+app.listen(port, () => {
+  console.log("v108");
+
+  console.log(`listening on: http://localhost:${port}`);
+});
+
+```
+
+- `code event_bus/index.js`
+
+```js
+
+```
