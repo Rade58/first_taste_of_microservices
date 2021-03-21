@@ -40,10 +40,37 @@ SADA CU DA BUILD-UJEM IMAGE
 
 3. CREATING DEPLOYMENT CONFIG
 
-- `touch event_bus/event_bus-depl.yaml`
+- `touch infra/k8s/event_bus-depl.yaml`
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: event_bus-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: event_bus
+  template:
+    metadata:
+      labels:
+        app: event_bus
+    spec:
+      containers:
+        - name: event_bus
+          image: radebajic/event_bus
+
+```
+
+DAKLE POTPUNO ISTA KONFIGURACIJA KAO I KOD POSTS
+
+SAMO SU CHANGED TWO OR THREE NAMES TO REFER TO event_bus A NE posts
 
 4. PULLING IMAGE FROM DOCKER HUB AND CREATING DEPLOYMENT
 
-- ``
+- `cd infra/k8s`
+
+- `kubectl rollout restart `
 
 
