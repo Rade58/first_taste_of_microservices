@@ -339,3 +339,17 @@ VEC SAM TI POKAZO KOMANDU ZA TO ,AKO SE SECAS
 
 - `kubectl rollout restart deployment posts-depl`
 - `kubectl rollout restart deployment event-bus-depl`
+
+# UVERI SE DA POTPUNO IMAS NOVE PODS, TAKO STO CES VIDETI NJIHOVU STAROST
+
+- `k get pods`
+
+KAKO MOZES DA VIDIS PROSLI SU UNISTENI I DEPLOYMENT JE KREIRAO OVE NOVE
+
+KOJI SU INSTATICIZIRANI SA CHANGEED IMAGE-OVIMA
+
+```zsh
+NAME                             READY   STATUS    RESTARTS   AGE
+event-bus-depl-697c7f75d-4jgqk   1/1     Running   0          3m20s
+posts-depl-7599cdfd64-6rlpv      1/1     Running   0          3m34s
+```
