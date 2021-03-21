@@ -272,3 +272,70 @@ app.listen(port, () => {
   console.log(`Event Bus on: http://localhost:${port}`);
 });
 ```
+
+# UPDATE-OVO SAM CODEBASE ZA OBA MICROSERVISA, ODNOSNO UPDATE-OVA0 OSAM CODE ZA OBA DEPLOYMENTA, ODNOSNO UPDATE-OVAO SAM CODE ZA SVE PODS KOJE IMAM; ODNOSNO NAJTACNIJE, UPDATE-OVAO SAM IMAGE, PA JE VREM DA REBUILD-UJEM OBA IMAGE-A KOJA IMAM
+
+- `docker images`
+
+```zsh
+REPOSITORY                    TAG              IMAGE ID       CREATED        SIZE
+radebajic/event_bus           latest           d4bb9439e1e3   4 hours ago    125MB
+radebajic/posts               latest           407c80c78664   20 hours ago   125MB
+radebajic/posts               <none>           cf42fec26f50   21 hours ago   125MB
+radebajic/posts               <none>           db4602a7c143   21 hours ago   125MB
+node                          lts-alpine3.12   8f86419010df   9 days ago     117MB
+gcr.io/k8s-minikube/kicbase   v0.0.18          a776c544501a   3 weeks ago    1.08GB
+
+```
+
+***
+***
+
+digresija:
+
+VIDIM OVDE IMAGE-OVE KOJI NEMAJU `latest` PA SE PITAM DA LI OVO MOZDA MOZE DA IZAZOVE PROBLEM, UKLONICU IH CISTO IZ PREDOSTROZNOSTI
+
+- `docker rmi cf42fec26f50 db4602a7c143`
+
+***
+***
+
+DA SE SADA VRATIM NA TEMU
+
+- `docker images`
+
+```zsh
+REPOSITORY                    TAG              IMAGE ID       CREATED        SIZE
+radebajic/event_bus           latest           d4bb9439e1e3   4 hours ago    125MB
+radebajic/posts               latest           407c80c78664   20 hours ago   125MB
+node                          lts-alpine3.12   8f86419010df   9 days ago     117MB
+gcr.io/k8s-minikube/kicbase   v0.0.18          a776c544501a   3 weeks ago    1.08GB
+```
+
+**REBUILD-UJEM IMAGES**
+
+- `cd posts/` `docker build -t radebajic/posts .`
+
+- `cd event_bus` `docker build -t radebajic/event_bus .`
+
+- `docker images` (cisto da vidim da su recreated)
+
+
+## SADA PUSH-UJEM IMAGES TO EVENT HUB
+
+- `docker push radebajic/posts`
+- `docker push radebajic/event_bus`
+
+# I SADA MOGU DA PULL-UJEM IMAGE-OVE AUTOMATSKI SA DOCKER HUB-A U MOJE DEPLOYMENTE, A TAKODJE CE SE U ISTO VREME I DEPLOYMENTI RESTARTOVATI, CIME CE SE U POD-OVIMA KORISTITI NOVI IMAGE-OVE
+
+- `k get deployments`
+
+```zsh
+event-bus-depl   1/1     1            1           3h17m
+posts-depl       1/1     1            1           20h
+```
+
+VEC SAM TI POKAZO KOMANDU ZA TO ,AKO SE SECAS
+
+- `kubectl rollout restart deployment posts-depl`
+- `kubectl rollout restart deployment event-bus-depl`
