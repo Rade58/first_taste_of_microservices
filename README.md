@@ -40,26 +40,27 @@ SADA CU DA BUILD-UJEM IMAGE
 
 3. CREATING DEPLOYMENT CONFIG
 
-- `touch infra/k8s/event_bus-depl.yaml`
+- `touch infra/k8s/event-bus-depl.yaml`
 
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: event_bus-depl
+  name: event-bus-depl
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: event_bus
+      app: event-bus
   template:
     metadata:
       labels:
-        app: event_bus
+        app: event-bus
     spec:
       containers:
-        - name: event_bus
+        - name: event-bus
           image: radebajic/event_bus
+
 
 ```
 
@@ -67,10 +68,28 @@ DAKLE POTPUNO ISTA KONFIGURACIJA KAO I KOD POSTS
 
 SAMO SU CHANGED TWO OR THREE NAMES TO REFER TO event_bus A NE posts
 
-4. PULLING IMAGE FROM DOCKER HUB AND CREATING DEPLOYMENT
+5. MORAS IPAK DA KRIRAS DEPLOYMENT LOKALNO
+
+***
+
+TO TI GOVORIM JER SI MOZDA NASLUTIO DA MOZES DA PULL-UJES SA DOCKER HUB-A I DA REBUILD-UJES DEPLOYMENT
+
+ALI TO TI JE SAMO KOD REBUILD-A (DAKLE PRVO MORAS DA IMAS BUILD)
+
+***
+
+ZNAJICI GRESKE MINIKUBE-A, UBACICU PRVO IMAGE INSIDE MINIKUBE REGISTRI
+
+- `docker images`
+
+- `minikube cache add radebajic/event_bus`
+
+- `minikube cache list`
+
+SADA CU DA KREIRAM DEPLOYMENT
 
 - `cd infra/k8s`
 
-- `kubectl rollout restart `
+- `kubectl apply -f event-bus-depl`
 
 
