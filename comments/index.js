@@ -49,7 +49,10 @@ app.post("/posts/:id/comments", async (req, res) => {
 
   commentsByPostId[postId] = comments;
 
-  await axios.post("http://localhost:4005/events", {
+  // UMESTO OVOGA
+  // await axios.post("http://localhost:4005/events", {
+  // OVO
+  await axios.post("http://event-bus-srv:4005/events", {
     type: "CommentCreated",
     payload: {
       postId,
@@ -63,7 +66,6 @@ app.post("/posts/:id/comments", async (req, res) => {
     .send({ id: commentId, content, status: startingStatus });
 });
 
-// HANDLING "CommentModerated"
 app.post("/events", async (req, res) => {
   const { type, payload } = req.body;
 
@@ -71,17 +73,16 @@ app.post("/events", async (req, res) => {
     const { postId, status: newStatus, content, id } = payload;
     console.log({ newStatus });
 
-    // WE ARE SENDING "CommentUpdated" TO EVENT BUS
-    // BUT FIRST LETS UPDATE DATBASE
     const comment = commentsByPostId[postId].find((val, index) => {
       return val.id === id;
     });
 
     comment.status = newStatus;
 
-    //
-
-    await axios.post("http://localhost:4005/events", {
+    // UMESTO OVOGA
+    // await axios.post("http://localhost:4005/events", {
+    // OVO
+    await axios.post("hhttp://event-bus-srv:4005/events", {
       type: "CommentUpdated",
       payload: {
         id,

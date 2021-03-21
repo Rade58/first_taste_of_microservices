@@ -24,15 +24,6 @@ app.get("/posts", async (req, res) => {
   res.send(posts);
 });
 
-// I ADDED THIS HELPER WHEN I WAS DEBUGGING
-// IT IS OBVIOUS WHT IT'S DOING
-//  BUT THAT IS NOT THE MOST IMPORTAN THING
-// IMPORTANT THING I PLACED IN CALLBACK THAT EXECUTES WHEN SERVER START
-// AT TH EED OF THIS FILE
-// YES I WILL USE THIS FUNCTION BACK THERE TOO
-// BECAAUSE AS YOU EE IT PROVIDES SOME AUTOMATION OF STORING
-// BASED ON EVENT TYPE
-// JUST WHAT I NEED
 const handleEvent = (type, payload) => {
   if (type === "PostCreated") {
     const { id, title } = payload;
@@ -62,8 +53,6 @@ const handleEvent = (type, payload) => {
   }
 };
 
-// ------------------------------------------------
-
 app.post("/events", async (req, res) => {
   const { type, payload } = req.body;
 
@@ -74,11 +63,7 @@ app.post("/events", async (req, res) => {
 
 const port = 4002;
 
-// IN HERE
 app.listen(port, async () => {
-  // SO WE ARE GOING TO UPDATE THIS DTABASE OF QUERY SERVICE
-  // WITH ALL EVENTS THAT WERE STACKED WHEN THIS SERVICE WAS DOWN
-
   const response = await axios.get("http://localhost:4005/events");
 
   const events = response.data;
