@@ -151,3 +151,7 @@ kubernetes      ClusterIP   10.96.0.1       <none>        443/TCP    2d5h
 posts-srv       ClusterIP   10.105.230.95   <none>        4000/TCP   3h17m
 ```
 
+
+
+
+
