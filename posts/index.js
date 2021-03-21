@@ -30,6 +30,10 @@ app.post("/posts", async (req, res) => {
   posts[id] = { id, title };
 
   try {
+
+    // EVO OVO JE PROBLEM
+    //  OVAJ URL NE FUNKCIONISE AKO ZNAM DA JE EVENT BUS
+    // USTVARO CONTAINERIZOVAN INSIDE POD
     const response = await axios.post("http://localhost:4005/events", {
       type: "PostCreated",
       payload: posts[id],

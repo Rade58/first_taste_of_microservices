@@ -1,158 +1,134 @@
-# CLUSTER IP SERVICE SETUP
+# HOW TO COMMUNICATE BETWEEB SERVICES
 
-SADA IMAM DVA DEPLOYMENTA
+TI SI PODESIO ClusterIP SERVICES ZA PODOVE IZ DVA DEPLOTMENT-A
 
-- `k get deployments`
+DAKLE IMAS TAKVA DVA CLUSTER IP SERVICE-A KAO COMMUNICATION LAYERE ISPRED POD-OVA
 
-```zsh
-NAME             READY   UP-TO-DATE   AVAILABLE   AGE
-event-bus-depl   1/1     1            1           35m
-posts-depl       1/1     1            1           18h
+REKAO SAM TI DA SE SDA SA POMENUTI MSERVISIMA KOJI SE RUNN-UJU MORATI PRAVITI REQUEST PREMA CLUSTER IP SERVISIMA
+
+ZASTO?
+
+PA NISU TI SVI MICROSERVISI DEPLOYED NA ISTOJ VIRTUAL MACHHINI ILI ISTOJ MACHINE-I
+
+RANIJE JE TAKO BILO, JER NISI KORISTIO KUBERNETES, I NISI NISTA DOCKERIZOVAO
+
+# DA SE PODESTIM KAKO RADI MOJ PROJKAT
+
+PA IMAM MICROSERVICES T=STRUKTURU KOJA JE EVENT BASED
+
+IMAM EVENT BUS, I KADA CLIENT HITT-UJE JEDAN MICROSRVIS, ONDA SE SALJE EVENT IZ TOG SERVISA PREMA EVENT BUS-U, E ONDA EVENT BUS SALJE NOTIFIKACIJE SVIM MICROSERVISIMA KOJE IMAM
+
+# ALI SADA POSTO SVE NIJE NA ISTOJ VIRTUAL MACHINE-I IMAM POGRESNE URL-OVE, JEDAN JE AGAINST WHICH MICROSERVICE SENDS EVENT, A DRUGI SU ONI AGAINST WHICH EVENT BUS SALJE NOTIFICATION-E
+
+EVO POGLEDDAJ
+
+- `cat posts/index.js`
+
+```js
+const express = require("express");
+const { json, urlencoded } = require("body-parser");
+const { randomBytes } = require("crypto");
+const cors = require("cors");
+const { default: axios } = require("axios");
+
+const app = express();
+
+app.use(cors());
+app.use(json());
+app.use(urlencoded({ extended: true }));
+
+const posts = { someid: { id: "someid", title: "foo bar baz" } };
+
+app.post("/events", async (req, res) => {
+  const { type, payload } = req.body;
+
+  console.log({ type, payload });
+
+  res.send({});
+});
+
+app.get("/posts", (req, res) => {
+  res.status(200).send(posts);
+});
+
+app.post("/posts", async (req, res) => {
+  const { title } = req.body;
+  const id = randomBytes(4).toString("hex");
+  posts[id] = { id, title };
+
+  try {
+
+    // EVO OVO JE PROBLEM
+    //  OVAJ URL NE FUNKCIONISE AKO ZNAM DA JE EVENT BUS
+    // USTVARO CONTAINERIZOVAN INSIDE POD
+    const response = await axios.post("http://localhost:4005/events", {
+      type: "PostCreated",
+      payload: posts[id],
+    });
+  } catch (err) {
+    console.error("Something went wrong", err);
+    res.end();
+  }
+
+  res.status(201).send(posts[id]);
+});
+
+const port = 4000;
+
+app.listen(port, () => {
+  // EVO SADA SAM OPET PROMENIO STA CE SE OVDE STAMPATI
+  console.log("v108"); // PROMENIO SAM OVO DA JE OVO VERZIJA 108 (RANIJE JE KAO STAJALO 46)
+  //
+
+  console.log(`listening on: http://localhost:${port}`);
+});
+
 ```
 
-IMAM I DVA POD-A, PO POD U JEDNOM I U DRUGOM DEPLOYMENTU
+- `cat event_bus/index.js`
 
-- `k get pods`
+```js
+const express = require("express");
+const axios = require("axios");
+const { json, urlencoded } = require("body-parser");
+const cors = require("cors");
 
-```zsh
-NAME                             READY   STATUS    RESTARTS   AGE
-event-bus-depl-74759d587-r7dwx   1/1     Running   0          35m
-posts-depl-55b9986456-g2gg4      1/1     Running   1          17h
+const app = express();
+
+const events = [];
+
+app.use(cors());
+app.use(json());
+app.use(urlencoded({ extended: true }));
+
+app.post("/events", (req, res) => {
+  const event = req.body;
+
+  events.push(event);
+
+  // EVO OVO NE VALJA ATO STO, OPET NAPOMINJEM
+  // MICROSERVISI AGAINST WHICH I'M MAKING A REQUEST
+  // SU INSIDE THEIR OWN VIRTIAL MACHINES
+  // ODNOSNO ONI SU INSIDE PODS, ODNOSNO INSIDE CONTAINERS
+
+  // TACNIJE SAMO JE TAK OSA POSTS
+  axios.post("http://localhost:4000/events", event);
+  // OSTALI JOS NISAM PROVEO KROZ KUBERNETES WORKFLOW
+  // ALI TO PLANIRAM DA URADIM
+  axios.post("http://localhost:4001/events", event);
+  axios.post("http://localhost:4002/events", event);
+  axios.post("http://localhost:4003/events", event);
+
+  res.send({ status: "OK" });
+});
+
+app.get("/events", (req, res) => {
+  res.send(events);
+});
+
+const port = 4005;
+
+app.listen(port, () => {
+  console.log(`Event Bus on: http://localhost:${port}`);
+});
 ```
-
-# NAIME, TEBI CE TREBATI CLIUSTER IP SERVICE, ZA JEDAN POD, ALI I JEDAN ZA DRUGI POD
-
-JER KOMUNIKACIJA, ODNOSNO TRAFFIC IDE SA JEDNOG PODA, DO CLUSTER IP-JA DRUGOG PODA, I TRAFFIC NA KRAJ STIGNE DO TOG DRUGOG PODA
-
-U MOM SLUCAJU TO ZNACI DA CU MORATI KREIRATI CLUSTER IP ZA posts I DA CU MORATI KREIRATI CLUSTER IP ZA event_bus
-
-# NEKI LJUDI VOLE DA KREIRAJ USEPARATE CONFIGURATION ZA CLUSTER IP; ALI JA NECU TO RADITI, VEC CU KONFIGURACIJU PISATI U DEPLOYMENT CONFIG FILE-OVIMA 
-
-TO JE ZATO IT MAKES SENSE TO COLLOATE CLUSTER IP ZAJEDNO SA POD-OM
-
-ODNOSN ODA JE BOLJE DA CLUSTER IP SERVICE BUDE VEZAN ZA POD/PODS KROZ KONFIGURACIJU
-
-**OVO ZNACI DA CU PRAVITI MULTIPLE OBJECTS SA JEDNOM CONFIG-U, I MORACU ZATO NEKAO ODVOJITI KONFIGURACIJU DEPLOYMENTA, OD KONFIGURACIJE CLUSTER IP SERVICE-A**
-
-TO SE RADI SA TRI CRTICE: `---`
-
-# PRVO CU DA DEFINISEM CLUSTER IP SERVICE ZA PODS FOR event_bus
-
-- `code infra/k8s/event-bus-depl.yaml`
-
-KONFIGURACIJA CE BIT ISLICNA ONOJ KONFIGURACIJI `NODE PORT SERVICE`-A (FAJL `infra/k8s/posts-srv.yaml`)
-
-I TU MORAM DA NAPRAVIM MANTCHING U ODNOSU NA LABEL I SELECTOR (GOVORIM O LABELU ZA PODS, KOJI SU U DEPLOYMENT DELU KONFIGURACIJE)
-
-```yaml
-# iznad ovoga je configuraacija deploymenta (necu je pokazivati ovde)
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: event-bus-srv
-spec:
-  selector:
-    app: event-bus
-  type: ClusterIP
-  ports:
-    - name: event-bus
-      protocol: TCP
-      port: 4005
-      targetPort: 4005
-```
-
-JA SAM SPECIFICIRAO TYPE, A DA NISI TO URADIO KUBERNETES BE DEFAULT-OVAO DO ClusterIP SERVICIRAO
-
-PORT NA KOJEM JE EVENT BUSS APP, JESTE NA 4005 (targetPort), A port POD-A JE ISTI, IAKO SAM MOGAO STAVITI RAZLICIT, ALI NECU
-
-ODMAH CU OVO POKUSATI DA APPLY-UJEM
-
-- `cd infra/k8s`
-
-- `kubectl apply -f event-bus-depl.yaml`
-
-```zsh
-deployment.apps/event-bus-depl unchanged
-service/event-bus-srv created
-```
-
-VIDIS DA TI KAZE DA JE NOVI CLUSTER IP SERVICE KREIRAN
-
-- `k get services`
-
-```zsh
-NAME            TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
-event-bus-srv   ClusterIP   10.103.22.50    <none>        4005/TCP         77s
-kubernetes      ClusterIP   10.96.0.1       <none>        443/TCP          2d5h
-posts-srv       NodePort    10.105.230.95   <none>        4000:31181/TCP   3h2m
-```
-
-EVO GA I NA LISTI KUBERNETES SERVISA, KAKO MOZES VIDETI GORE
-
-
-# SAD CU DA DEFINISEM CLUSTER IP SERVICE ZA PODS FOR posts
-
-- `code infra/k8s/posts-depl.yaml`
-
-```yaml
-# iznad ovoga je configuraacija deploymenta (necu je pokazivati ovde)
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: posts-srv
-spec:
-  selector:
-    app: posts
-  type: ClusterIP
-  ports:
-    - name: posts
-      protocol: TCP
-      port: 4000
-      targetPort: 4000
-```
-
-- `cd infra/k8s`
-
-- `kubectl apply -f posts-depl.yaml`
-
-```zsh
-deployment.apps/posts-depl unchanged
-service/posts-srv configured
-```
-
-PRIMECUJES KAKO OVDE STOJI ZA SERVICE DA JE CONFIGURED, PREDPOSTAVLJAM DA SAM JA OVIM OVERRIDE-OVAO ONAJ `NODE PORT SERVICE` KOJI JE IMAO SVOJ FILE 
-
-TAKO JE I ZATO TI GORE STOJI `configured`
-
-TO JE ZATO STO SI KORISTIO ISTO IME KADA SI PRAVIO NODE PORT SERVICE
-
-***
-***
-
-digresija:
-
-NIJE VELIKA GRESKA, SAMO OVERRIDING, JA SAM ZATO PONOVO KREIRAO ONAJ `NODE PORT SERVICE`
-
-NECE MI TREBATI N IZA STA ALI NEKA GIMAM, SAMO SAM MU PROMENIO IME (INDICIRAO SAM DA JE REC O DEVELOPMENTU JER SE TAJ SERVICE SAMO KORISTI ZA DEVELOPMENT) (PROMENIO SAM I IME FILE-A `infra/k8s/posts-dev-srv.yaml`)
-
-***
-***
-
-DA SE SADA VRATIM NA TEMU
-
-- `k get services`
-
-```zsh
-NAME            TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
-event-bus-srv   ClusterIP   10.103.22.50    <none>        4005/TCP   16m
-kubernetes      ClusterIP   10.96.0.1       <none>        443/TCP    2d5h
-posts-srv       ClusterIP   10.105.230.95   <none>        4000/TCP   3h17m
-```
-
-## DAKLE USPESNO SAM KRIRAO DVA `Cluster IP` SERVICE-A
-
-OSTALO JE JOS DA WIREE-UJEM STUFF UP
-
-KAKO BI MOJA DVA PODA MOGLA DAA KOMUNICIRAJU JEDAN SA DRUGIM, VEOMA LAKO
