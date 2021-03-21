@@ -64,7 +64,10 @@ app.post("/events", async (req, res) => {
 const port = 4002;
 
 app.listen(port, async () => {
-  const response = await axios.get("http://localhost:4005/events");
+  // UMESTO OVOGA
+  //const reponse =  await axios.get("http://localhost:4005/events");
+  // OVO
+  const response = await axios.get("http://event-bus-srv:4005/events");
 
   const events = response.data;
 
