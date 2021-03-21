@@ -186,8 +186,12 @@ const posts = { someid: { id: "someid", title: "foo bar baz" } };
 
 app.post("/events", async (req, res) => {
   const { type, payload } = req.body;
-
+  // OVO OVDE SAM DAVNO RANIJE DEFINISAO, ALI BICE TI HANDY
+  // KADA BUDES TESTIRAO, JER OVDE BI TREBALO DA DODJE EVENT
+  // ODNOSNO NOTIFICATION (USTVARI TO JE EVENT, ALI JA ON OSTO 
+  // SALJE EVENT BUS ZOVEM NOTIFICATIONOM) 
   console.log({ type, payload });
+  // ZATO CE GORNJE STMPANJE BITI HANDY
 
   res.send({});
 });
@@ -353,3 +357,91 @@ NAME                             READY   STATUS    RESTARTS   AGE
 event-bus-depl-697c7f75d-4jgqk   1/1     Running   0          3m20s
 posts-depl-7599cdfd64-6rlpv      1/1     Running   0          3m34s
 ```
+
+# SADA ZELIM DA TESTIRAM MOJ CODE
+
+NAPRAVICU REQUEST PREMA /posts IN ORDER TO MAKE NEW POST
+
+TO SADA MOGU RADITI KROZ ONAJ `NODE PORT SERVICE`, KOJI KAKO SAM RKAO SAMO SLUZI ZA DEVELOPMENT, I OVDE CE UPRAVO DA POSLUZI, I JA MOGU OVDE KORISTITI **HTTPIE** ZA SLANJE POSTS REQUESTA
+
+AKO SE SECAS SALJE S SAMO TITLE ODNOSNO NEKI TEKST
+
+DAKLE ZELI DA WIDIM DA LI CE TAJ FLOW PROCI KAKO TREBA
+
+DAKLE KADA JA NAPRAVIM POST, ONDA POST SERVICE SALJE EVENT PREMA CLUSTER IP SERVISU POD-A, GDE JE DEPLOYED MOJ event_bus MIKROSERVIS
+
+ZATIM TAJ CLUSTER IP REDIRECT-UJE TRAFFIC PREMA EVENT BUS-U
+
+E, A ONDA EVENT BUS SALJE NOTIFICATION SVI SVOJIM OSTALI MIKROSERVISIMA, USTVARI ZA SADA SALJE SAMO DO CLUSTER IP SERVIA, PONOVO ZA posts
+
+E TU CE SE DESITI STMAPNJE JER SAM TAKO DEFINISAO U CODEBASE, I ZNACU DA JE CEO OVAJ FLOW OK
+
+**PRVO DA PRONADJEM ONAJ NODE PORT SERVIS, KOJ IKAKO SAM REKAO SLUZI ZA DEVELOPMENT**
+
+- `k get services`
+
+```zsh
+NAME            TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+event-bus-srv   ClusterIP   10.103.22.50    <none>        4005/TCP         3h15m
+kubernetes      ClusterIP   10.96.0.1       <none>        443/TCP          2d8h
+posts-dev-srv   NodePort    10.105.170.31   <none>        4000:31690/TCP   177m
+posts-srv       ClusterIP   10.105.230.95   <none>        4000/TCP         6h16m
+```
+
+EVO U PITANJU JE `posts-dev-srv`, CIJI JE PORT `:31690`
+
+TREBA MI JOS IP `minicube`-A
+
+- `minikube ip`
+
+```zsh
+192.168.49.2
+```
+
+I PRAVIM URL ENDPOINT-A KOJ ISLUZI ZA `'POST'` REQUEST, KOJIM SE PRAVI NOVI POST ZA posts MICROSERVICE
+
+KAO STO VIDIS PRAVIM GA OD MINIKUBE IP-JA, I NODE PORT SERVICE-OVOG PORTA, KAO STO SAM TI RANIJE POKAZO
+
+`192.168.49.2:31690/posts` (posts JE ENDPOINT ZA EXPRESS SERVER, CISTO NAPOMINJEM) (VIDIS DA TI NE TREBA PROTOKOL)
+
+**UPOTREBLJAVAM HTTPIE DA NAPRAVIM POST REQUEST; ISTO TAKO APP MI JE TKAV DA ZAHTEVA `title` PROPERTI U BODY-JU**
+
+- `http POST 192.168.49.2:31690/posts title="Hello I'm Stavros"`
+
+REQUEST JE BIO USPESAN, NE MORAM DA TI POKAZUJEM RESPONSE
+
+**SADA MOGU DA PROVERIM, CEO FLOW, KOJI SAM TI POMNUO VEC**
+
+TO RADIM TAKO STO CU DA STMAPAM LOGS INSIDE POD, KOJI U KOJEM RUNN-UJE CONTAINER IMAGE-A ZA posts MICROSERVICE
+
+- `k get pods`
+
+```zsh
+NAME                             READY   STATUS    RESTARTS   AGE
+event-bus-depl-697c7f75d-4jgqk   1/1     Running   1          98m
+posts-depl-7599cdfd64-6rlpv      1/1     Running   1          98m
+
+```
+
+- `k logs posts-depl-7599cdfd64-6rlpv`
+
+```zsh
+> posts@1.0.0 start /app
+> npx nodemon index.js
+
+[nodemon] 2.0.7
+[nodemon] to restart at any time, enter `rs`
+[nodemon] watching path(s): *.*
+[nodemon] watching extensions: js,mjs,json
+[nodemon] starting `node index.js`
+v108
+listening on: http://localhost:4000
+{
+  type: 'PostCreated',
+  payload: { id: '3c5b7cdc', title: "Hello I'm Stavros" }
+}
+
+```
+
+ETO STMAPN JE POST KOJI SAM KRIRAO, TAKO DA JE SVE OK
+
