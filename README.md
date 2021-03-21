@@ -132,3 +132,27 @@ app.listen(port, () => {
   console.log(`Event Bus on: http://localhost:${port}`);
 });
 ```
+
+# URL-OVE MOZES DA SAGRDIS U POMOC NAME ILI TAGA CLUSTER IP SERVICE-OVA
+
+- `k get services` (AKO SI ZABORAVIO k SAM PODESIO DA BUDE ALIAS ZA `kubectl`)
+
+```zsh
+NAME            TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)          AGE
+event-bus-srv   ClusterIP   10.103.22.50    <none>        4005/TCP         54m
+kubernetes      ClusterIP   10.96.0.1       <none>        443/TCP          2d6h
+posts-dev-srv   NodePort    10.105.170.31   <none>        4000:31690/TCP   36m
+posts-srv       ClusterIP   10.105.230.95   <none>        4000/TCP         3h55m
+
+```
+
+I NEMAS POTREBE DA KORISTIS PORTOVE, KOJI SU GORE LISTED
+
+TAKO DA AKO SALJES REQUEST PREMA posts MIKROSERVISU, ONDA TO RADIS AGAINST SLEDECI ENDPOINT:
+
+- `http://posts-srv/`
+
+I TAKO DA AKO SALJES REQUEST PREMA event_bus MIKROSERVISU, ONDA TO RADIS AGAINST SLEDECI ENDPOINT:
+
+- `http://event-bus-srv`
+
