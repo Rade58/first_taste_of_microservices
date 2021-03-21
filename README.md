@@ -577,3 +577,16 @@ REQUEST JE BIO SUCCESSFUL I NAPRAVLJEN JE NOVI POST
 
 **MOZES DA PROVERIS LOGS RAZLICITIH PODS, DA VIDIS STA SE TAMO STAMPLO, U CONTAINERIMA I UKOJIM RUNN-UJU MOJI NODE MIKROSERVISI**
 
+- `k get pods`
+
+```zsh
+NAME                              READY   STATUS    RESTARTS   AGE
+comments-depl-7f85b5f495-nhtsd    1/1     Running   0          92m
+event-bus-depl-74c646ff5c-mth5g   1/1     Running   0          63m
+moderation-depl-fc77b94df-xngmn   1/1     Running   0          92m
+posts-depl-7599cdfd64-6rlpv       1/1     Running   1          4h30m
+query-depl-76bb598fcd-shq2n       1/1     Running   0          65s
+```
+
+- `k logs <IME NEKOG OD GORNJIH PODS>`
+
