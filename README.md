@@ -416,6 +416,20 @@ spec:
 - `kubectl apply -f comments-depl.yaml`
 - `kubectl apply -f query-depl.yaml`
 
+***
+***
+***
+***
+
+UMESTO STO SI INSTATICIZIRAO SVAK IDEPLOYMENT PO NA OSOB MOGAO SI OVAK ODA NAPISES, KAKO BI CREIRA/RECREAT-OVAO DEPLOYMENTS SVIH CONFIG FILE-OVA IZ `infra/k8s` FOLDERA
+
+- `kubectl apply -f .` (DAKLE SAMO KORISTIS TACKU)
+
+***
+***
+***
+***
+
 - `k get deployments`
 
 ```zsh
