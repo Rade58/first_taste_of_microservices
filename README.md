@@ -536,3 +536,44 @@ app.listen(port, () => {
 
 - `kubectl rollout restart deployment event-bus-depl`
 
+# 10 MOGU DA TESTIRAM, ALI OVO JE SAMO GOOD ENOUGH TEST
+
+A SASTOJA CE SE OD TOGA DA NAPRAVIM POST, JER IMAM `NODE PORT SERVICE` VEZAN ZA POD U KOJEM RUNN-UJE CONTAINER posts MICROSERVISA
+
+NAKON TOGA MOGU STMAPATI LOGOVE DIFFERENT PODS OF MY APPLICATION
+
+BUILD-UJEM URL ZA ONAJ JEDINI NODE PORT SERVICE
+
+- `minikube ip`
+
+```zsh
+192.168.49.2
+```
+
+- `k get services`
+
+```zsh
+NAME             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+comments-srv     ClusterIP   10.108.43.70     <none>        4001/TCP         73m
+event-bus-srv    ClusterIP   10.103.22.50     <none>        4005/TCP         5h57m
+kubernetes       ClusterIP   10.96.0.1        <none>        443/TCP          2d11h
+moderation-srv   ClusterIP   10.97.129.13     <none>        4003/TCP         73m
+posts-dev-srv    NodePort    10.105.170.31    <none>        4000:31690/TCP   5h38m
+posts-srv        ClusterIP   10.105.230.95    <none>        4000/TCP         8h
+query-srv        ClusterIP   10.101.226.177   <none>        4002/TCP         73m
+```
+
+PORT JE `31690`
+
+I OD TOGA SAM NAPRAVIO UR SA KOJIM MOGU PRAVITI POST REQUEST AGAINST posts MICROSERVICE, KAKO BI NAPRAVIO NOVI POST
+
+`192.168.49.2:31690/posts`
+
+KORISTIM HTTPIE, JER VOLIM DA KORISTIM TAJ TOOL
+
+- `http POST 192.168.49.2:31690/posts title="Nick is going to make it"`
+
+REQUEST JE BIO SUCCESSFUL I NAPRAVLJEN JE NOVI POST
+
+**MOZES DA PROVERIS LOGS RAZLICITIH PODS, DA VIDIS STA SE TAMO STAMPLO, U CONTAINERIMA I UKOJIM RUNN-UJU MOJI NODE MIKROSERVISI**
+
