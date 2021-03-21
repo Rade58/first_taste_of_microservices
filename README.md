@@ -273,3 +273,177 @@ app.listen(port, async () => {
   console.log(`Query Service on: http://localhost:${port}`);
 });
 ```
+
+# 2. SADA MOGU BUILD-OVATI DOCKER IMAGE-OVE
+
+- `cd moderation` `docker build -t radebajic/moderation .`
+
+- `cd comments` `docker build -t radebajic/comments .`
+
+- `cd query` `docker build -t radebajic/query .`
+
+# 3. PA TE IMAGE-OVE MOGU DA PUSH-UJEM TO DOCKER HUB
+
+- `docker push radebajic/moderation`
+
+- `docker push radebajic/comments`
+
+- `docker push radebajic/query`
+
+PROVERIO SAM NA <https://hub.docker.com/repositories>
+
+SVI IMAGE-OVI SU TAMO
+
+# 4. SADA PRAVIM CONFIG FILES ZA DEPLOYMENTS I ZA CLUSTER IP SERVICES
+
+- `touch infra/k8s/moderation-depl.yaml`
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: moderation-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: moderation
+  template:
+    metadata:
+      labels:
+        app: moderation
+    spec:
+      containers:
+        - name: moderation
+          image: radebajic/moderation:latest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: moderation-srv
+spec:
+  selector:
+    app: moderation
+  type: ClusterIP
+  ports:
+    - name: moderation
+      protocol: TCP
+      port: 4000
+      targetPort: 4000
+```
+
+- `touch infra/k8s/comments-depl.yaml`
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: comments-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: comments
+  template:
+    metadata:
+      labels:
+        app: comments
+    spec:
+      containers:
+        - name: comments
+          image: radebajic/comments:latest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: comments-srv
+spec:
+  selector:
+    app: comments
+  type: ClusterIP
+  ports:
+    - name: comments
+      protocol: TCP
+      port: 4000
+      targetPort: 4000
+
+```
+
+- `touch infra/k8s/query-depl.yaml`
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: query-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: query
+  template:
+    metadata:
+      labels:
+        app: query
+    spec:
+      containers:
+        - name: query
+          image: radebajic/query:latest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: query-srv
+spec:
+  selector:
+    app: query
+  type: ClusterIP
+  ports:
+    - name: query
+      protocol: TCP
+      port: 4000
+      targetPort: 4000
+```
+
+# 5. INSTATICIZIRAM DEPLOYMENTS (SA NJIMA NJIHOVE PODS), I INSTATICIZIRAM CLUSTER IP-JEVE
+
+- `cd infra/k8s`
+
+- `kubectl apply -f moderation-depl.yaml`
+- `kubectl apply -f comments-depl.yaml`
+- `kubectl apply -f query-depl.yaml`
+
+- `k get deployments`
+
+```zsh
+NAME              READY   UP-TO-DATE   AVAILABLE   AGE
+comments-depl     1/1     1            1           106s
+event-bus-depl    1/1     1            1           6h19m
+moderation-depl   1/1     1            1           116s
+posts-depl        1/1     1            1           23h
+query-depl        1/1     1            1           95s
+```
+
+- `k get services`
+
+```zsh
+NAME             TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
+comments-srv     ClusterIP   10.108.43.70     <none>        4000/TCP         2m4s
+event-bus-srv    ClusterIP   10.103.22.50     <none>        4005/TCP         4h45m
+kubernetes       ClusterIP   10.96.0.1        <none>        443/TCP          2d9h
+moderation-srv   ClusterIP   10.97.129.13     <none>        4000/TCP         2m15s
+posts-dev-srv    NodePort    10.105.170.31    <none>        4000:31690/TCP   4h27m
+posts-srv        ClusterIP   10.105.230.95    <none>        4000/TCP         7h46m
+query-srv        ClusterIP   10.101.226.177   <none>        4000/TCP         114s
+```
+
+- `k get pods`
+
+```zsh
+NAME                              READY   STATUS    RESTARTS   AGE
+comments-depl-7f85b5f495-nhtsd    1/1     Running   0          2m25s
+event-bus-depl-697c7f75d-4jgqk    1/1     Running   1          3h
+moderation-depl-fc77b94df-xngmn   1/1     Running   0          2m31s
+posts-depl-7599cdfd64-6rlpv       1/1     Running   1          3h
+query-depl-6bdd56865f-jpvz4       1/1     Running   0          2m14s
+```
