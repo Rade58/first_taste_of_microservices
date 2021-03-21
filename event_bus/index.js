@@ -16,18 +16,16 @@ app.post("/events", (req, res) => {
 
   events.push(event);
 
-  // EVO OVO NE VALJA ATO STO, OPET NAPOMINJEM
-  // MICROSERVISI AGAINST WHICH I'M MAKING A REQUEST
-  // SU INSIDE THEIR OWN VIRTIAL MACHINES
-  // ODNOSNO ONI SU INSIDE PODS, ODNOSNO INSIDE CONTAINERS
-
-  // TACNIJE SAMO JE TAK OSA POSTS
-  axios.post("http://localhost:4000/events", event);
+  // UMESTO OVOGA
+  // axios.post("http://localhost:4000/events", event);
+  // OVO
+  axios.post("http://posts-srv:4000/events", event);
   // OSTALI JOS NISAM PROVEO KROZ KUBERNETES WORKFLOW
   // ALI TO PLANIRAM DA URADIM
-  axios.post("http://localhost:4001/events", event);
+  // I ATO COMMENTUJEM OVO OUT ZA SADA
+  /* axios.post("http://localhost:4001/events", event);
   axios.post("http://localhost:4002/events", event);
-  axios.post("http://localhost:4003/events", event);
+  axios.post("http://localhost:4003/events", event); */
 
   res.send({ status: "OK" });
 });
