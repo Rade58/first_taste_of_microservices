@@ -48,6 +48,10 @@ MOZEMO FGA NAZVATI `nodePort` PROSTO A BI GA RAZLIKOVALI IMENSKI OD `port` I `ta
 
 UGLAVNOM TO JE BROJ KOJI JE AROUND 30000
 
+ZNAM KOJI JE PORT JER SAM GA PROCITAO SA GORNJE TABELE
+
+ALI MOGU DA GA OBTAIN-UJEM I OVAKO
+
 SADA CU DA RUNN-UJE I describe KOMANDU
 
 - `k describe service posts-srv`
@@ -69,5 +73,51 @@ Endpoints:                172.17.0.2:4000
 Session Affinity:         None
 External Traffic Policy:  Cluster
 Events:                   <none>
+```
+
+EVO GA GORE, UNDER `NodePort`
+
+# ACCESSING NODE PORT SERVICE
+
+RAZLIKUJE SE OD TOGA DA LI RUNN-UJE KUBERNETIS ON WINDOWS/MAC ILI LINUX
+
+ZA WINDOWS KORISTIS `localhost:` + `<nodePort>` + `/posts`
+
+**ZA LINUX, ODNOSNO `minikube` KOJI JA KORISTIM, TREBAM DA OBTAIN-UJEM IP ADRESS SA SLEDECOM KOMANDOM**
+
+- `miinikube ip`
+
+ONDA URL FORMIRAM OVAKO: `<minikube ip:>` + `nodePort` + `/posts`
+
+I EVO USPEO SAM DA FORMIRAM OVAKAV URL:
+
+`192.168.49.2:31181/posts`
+
+EVO TETIRACU OVO SA HTTPIE
+
+- `http GET 192.168.49.2:31181/posts`
+
+I DOBIO SAM DATA
+
+```zsh
+TTP/1.1 200 OK
+Access-Control-Allow-Origin: *
+Connection: keep-alive
+Content-Length: 48
+Content-Type: application/json; charset=utf-8
+Date: Sun, 21 Mar 2021 13:24:42 GMT
+ETag: W/"30-pk+FWmtPCpt6a1i2oVKuDH6mFys"
+Keep-Alive: timeout=5
+X-Powered-By: Express
+
+{
+    "someid": {
+        "id": "someid",
+        "title": "foo bar baz"
+    }
+}
+
 
 ```
+
+A MOGAO SI I URL DA UNESES U ADRESS BAR BROWSER-A, I TAMO JE FUNKCIONISALO
