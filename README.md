@@ -95,3 +95,9 @@ SADA CU DA KREIRAM DEPLOYMENT
 - `k get deployments`
 
 - `k get pods`
+
+```zsh
+NAME                             READY   STATUS    RESTARTS   AGE
+event-bus-depl-74759d587-r7dwx   1/1     Running   0          51s
+posts-depl-55b9986456-g2gg4      1/1     Running   1          16h
+```
