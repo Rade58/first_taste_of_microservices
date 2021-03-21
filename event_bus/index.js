@@ -16,16 +16,13 @@ app.post("/events", (req, res) => {
 
   events.push(event);
 
-  // UMESTO OVOGA
-  // axios.post("http://localhost:4000/events", event);
-  // OVO
   axios.post("http://posts-srv:4000/events", event);
-  // OSTALI JOS NISAM PROVEO KROZ KUBERNETES WORKFLOW
-  // ALI TO PLANIRAM DA URADIM
-  // I ATO COMMENTUJEM OVO OUT ZA SADA
-  /* axios.post("http://localhost:4001/events", event);
-  axios.post("http://localhost:4002/events", event);
-  axios.post("http://localhost:4003/events", event); */
+
+  // EVO SAD SALJEM AGAINST NEW URLS ----------------
+  axios.post("http://comments-srv:4001/events", event);
+  axios.post("http://query-srv:4002/events", event);
+  axios.post("http://moderation-srv:4003/events", event);
+  // -----------------------------------------------
 
   res.send({ status: "OK" });
 });
