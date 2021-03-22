@@ -156,15 +156,14 @@ Access-Control-Allow-Origin: *
 Connection: keep-alive
 Content-Length: 46
 Content-Type: application/json; charset=utf-8
-Date: Mon, 22 Mar 2021 21:44:59 GMT
-ETag: W/"2e-TQO9lih4VYl8eja8tfO71oel7ks"
+Date: Mon, 22 Mar 2021 22:03:27 GMT
+ETag: W/"2e-uoz3aTuBk+EPEcUHADsdI3k2+sQ"
 X-Powered-By: Express
 
 {
-    "id": "e7533a7c",
+    "id": "2bbd3b2a",
     "title": "My name is Stavros"
 }
-
 ```
 
 I ZISTA REQUEST JE BIO USPESAN STO ZNACI DA JE INGRESS CONTROLLER USPESNO BIO PREVAREN (USTVARI PREVAREN JE CLUSTER) KADA SAM OTISO NA `myblog.com` MISLECI DA JE myblog.com, USTVARI ONAJ IP DOBIJEN OD `minikube ip` KOMANDE (ODNOSNO IP NA KOJEM JE HOSTED MOJ CLUSTER)
