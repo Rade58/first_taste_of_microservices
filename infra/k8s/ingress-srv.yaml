@@ -7,3 +7,9 @@ metadata:
 spec:
   rules:
     - host: posts.com
+      http:
+        paths:
+          - path: /posts
+            backend:
+              serviceName: posts-srv
+              servicePort: 4000
