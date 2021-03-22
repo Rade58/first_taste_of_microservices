@@ -28,6 +28,21 @@ KORISTICU ONO UNDER NAME I UNDER PORT
 - `touch infra/k8s/ingress-srv.yaml`
 
 ```yaml
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-srv
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+    - host: posts.com
+      http:
+        paths:
+          - path: /posts
+            backend:
+              serviceName: posts-srv
+              servicePort: 4000
 
 ```
 
@@ -46,6 +61,10 @@ DAKLE JA NISAM POBROJAO, TAKORECI SVE CLUSTER IP SERVISE
 NEMA VEZE KASNIJE CU, A SADA DA FEED-UJEM CONFIG
 
 # FEED-OVACU FILE TO OUR CLUSTER, GDE CE AUTMATSKI BITI DISCOVERED BY INGRESS CONTROLLER
+
+- `cd infra/k8s`
+
+- `kubectl apply -f ingress-srv.yaml`
 
 S OVIM SAM UPDATE-OVAO ROUTING RULES INGRESS CONTROLLER-A, KAKO BI MATCH-OVAO ONE KOJE SAM MU DAO
 
