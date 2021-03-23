@@ -11,5 +11,5 @@ spec:
         paths:
           - path: /posts
             backend:
-              serviceName: posts-srv
-              servicePort: 4000
+              serviceName: query-srv
+              servicePort: 4002
