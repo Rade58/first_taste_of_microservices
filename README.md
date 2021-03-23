@@ -49,6 +49,40 @@ DA OMOGUCIM REGULAR EXPRESSION, KAKO VIDIS DOLE ZADAO SAM `nginx.ingress.kuberne
 - `code `
 
 ```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-srv
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  rules:
+    - host: "myblog.com"
+      http:
+        paths:
+          - path: /create
+            pathType: Exact
+            backend:
+              service:
+                name: posts-srv
+                port:
+                  number: 4000
+          - path: /posts
+            pathType: Exact
+            backend:
+              service:
+                name: query-srv
+                port:
+                  number: 4002
+          - path: /post/?(.*)/create_comment
+            pathType: Exact
+            backend:
+              service:
+                name: comments-srv
+                port:
+                  number: 4001
+
 
 ```
 
