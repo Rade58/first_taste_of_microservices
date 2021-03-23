@@ -11,6 +11,9 @@ TAKO DA CU EDIT-OVATI KONFIGURACIJU ZA INGRESS CONTROLLER-A, I TAKODJE CU POKREA
 ***
 
 
+# 1. PRVO NE ZELIM DA KORISTIM BETA VERZIJU KONFIGURACIJE
+
+
 MORAM SE PRVO PODSETITI STA SAM URADIO U PROSLOM BRANCH-U
 
 DAKLE U PROSLOM BRANCH-U SAM NAPRAVIO CONFIG ZA `INGRESS CONTROLLER`
@@ -263,3 +266,27 @@ const PostList: FC = () => {
 export default PostList;
 
 ```
+
+
+***
+***
+***
+***
+***
+***
+***
+
+```yaml
+nginx.ingress.kubernetes.io/use-regex: "true"
+```
+
+```yaml
+- path: /posts/create
+  pathType: Prefix
+  backend:
+    service:
+      name: posts-srv
+      port:
+        number: 40001
+```
+
