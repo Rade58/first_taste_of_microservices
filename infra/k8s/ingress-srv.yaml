@@ -1,23 +1,26 @@
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ingress-srv
   annotations:
     kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   rules:
-    - host: myblog.com
+    - host: "myblog.com"
       http:
         paths:
+          - path: /posts/create
+            pathType: Prefix
+            backend:
+              service:
+                name: posts-srv
+                port:
+                  number: 4000
           - path: /posts
+            pathType: Exact
             backend:
-              serviceName: query-srv
-              servicePort: 4002
-          - path: /create_post
-            backend:
-              serviceName: posts-srv
-              servicePort: 4000
-          - path: /create_comment
-            backend:
-              serviceName: comments-srv
-              servicePort: 4001
+              service:
+                name: query-srv
+                port:
+                  number: 4002
