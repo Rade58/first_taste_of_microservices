@@ -82,7 +82,7 @@ app.post("/events", async (req, res) => {
     // UMESTO OVOGA
     // await axios.post("http://localhost:4005/events", {
     // OVO
-    await axios.post("hhttp://event-bus-srv:4005/events", {
+    await axios.post("http://event-bus-srv:4005/events", {
       type: "CommentUpdated",
       payload: {
         id,
