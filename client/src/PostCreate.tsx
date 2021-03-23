@@ -5,8 +5,10 @@ const PostCreate: FC = () => {
   const [title, setTitle] = useState<string>("");
 
   const submitCallback = useCallback(async () => {
+    /* const createdPost = await axios.post(
+      "http://localhost:4000/posts", */
     const createdPost = await axios.post(
-      "http://localhost:4000/posts",
+      "http://myblog.com/create",
       {
         title,
       },
@@ -23,8 +25,6 @@ const PostCreate: FC = () => {
   return (
     <div>
       <form
-        // INSTEAD OF #  YOU USED e.preventDefault
-        // action="#"
         onSubmit={(e) => {
           e.preventDefault();
           submitCallback();

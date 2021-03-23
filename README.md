@@ -28,6 +28,26 @@ Events:
 
 A MOGAO SI DA POGLEDAS U FILE `infra/k8s/ingress-srv.yaml` I IZ NJEGA DA IZVUCES ZAKLJUCKE KAKO DA SAGADIS URLS
 
+IMAM TRI URL-A, JEDAN ZA GETTIN ALL POSTS AND COMMENTS, DRUGI ZA POST CREATION I TRECI ZA COMMANT CREATION
+
+`http://myblog.com/posts`
+`http://myblog.com/create`
+`http://myblog.com/post/:id/comment_create`
+
+SADA CU DA UPOTREBIM SVE TE URL-OVE U REACT KOMPONENTAMA
+
+NECU IH STMAPATI SAMO CU TI OSTAVITI FILE-OVE GDE SAM TO URADIO
+
+`cat client/src/PostList.tsx`
+`cat client/src/PostCreate.tsx`
+`cat client/src/PostCreate.tsx`
+
+MOZES SAM OTVORITI TE FILE-OVE VIDETI STA SAM TO URADIO
+
+## MOGU SADA SAGRADITI I DOCKER IMAGE ZA MOJ REACT APP
+
+
+
 ***
 ***
 ***
