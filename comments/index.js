@@ -49,9 +49,6 @@ app.post("/post/:id/comment_create", async (req, res) => {
 
   commentsByPostId[postId] = comments;
 
-  // UMESTO OVOGA
-  // await axios.post("http://localhost:4005/events", {
-  // OVO
   await axios.post("http://event-bus-srv:4005/events", {
     type: "CommentCreated",
     payload: {
@@ -79,9 +76,6 @@ app.post("/events", async (req, res) => {
 
     comment.status = newStatus;
 
-    // UMESTO OVOGA
-    // await axios.post("http://localhost:4005/events", {
-    // OVO
     await axios.post("http://event-bus-srv:4005/events", {
       type: "CommentUpdated",
       payload: {
