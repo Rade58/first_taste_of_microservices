@@ -184,6 +184,42 @@ X-Powered-By: Express
 {}
 ```
 
+# UVID U INGRESS CONTROLLER
+
+TO MOZES URADITI SA SLEDECOM KOMANDOM:
+
+`kubectl describe ingress <ime ingres service-a>`
+
+IME JE ONO U KOJE SAM MU DAO U FILE-U (infra/k8s/ingress-srv.yaml)
+
+- `k describe ingress ingress-srv`
+
+```zsh
+Name:             ingress-srv
+Namespace:        default
+Address:          192.168.49.2
+Default backend:  default-http-backend:80 (<error: endpoints "default-http-backend" not found>)
+Rules:
+  Host        Path  Backends
+  ----        ----  --------
+  myblog.com  
+              /posts   query-srv:4002 (172.17.0.6:4002)
+Annotations:  kubernetes.io/ingress.class: nginx
+Events:
+  Type    Reason  Age                From                      Message
+  ----    ------  ----               ----                      -------
+  Normal  CREATE  26m                nginx-ingress-controller  Ingress default/ingress-srv
+  Normal  CREATE  25m                nginx-ingress-controller  Ingress default/ingress-srv
+  Normal  UPDATE  24m (x2 over 25m)  nginx-ingress-controller  Ingress default/ingress-srv
+  Normal  CREATE  5m24s              nginx-ingress-controller  Ingress default/ingress-srv
+  Normal  CREATE  4m47s              nginx-ingress-controller  Ingress default/ingress-srv
+  Normal  UPDATE  4m46s              nginx-ingress-controller  Ingress default/ingress-srv
+
+```
+
+GORE DAKLE IMAM NEKU UVID (MISLIO SAM DA NEMAM NIKAV UVID U INGRESS CONTROLLER, MEDJUTIM, KAKO VIDIS IMAM)
+
+
 ## STO SE TICE REACT APPLIKACIJE, POTREBNO JE DA IZMENIMO CODE U KOJEM PRAVIM REQUEST-OVE, KAKO BI ONI HITTOVALI `myblog.com`, ALI PRE TOGA MORACU DA POVEZEM JOS JEDAN CLUSTER API SERVICE SA INGRESS CONTROLLEROM; ZATO STO IZ MOG REACT APP-A JA SALJEM REQUESTS ZA GETTING ALL POSTS, KOJI TREBA DA HITT-UJE query MICROSERVICE
 
 NAIME, JA SAM PODESIO DA DA INGRESS CONTROLLER RAZGOVARA SA CLUSTER IP SERVICE-OM KOJI JE IN FRONT OF POD U KOJEM JE CONTAINER `posts` MICROSERVICE-A
