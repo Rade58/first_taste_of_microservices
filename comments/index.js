@@ -34,7 +34,7 @@ app.get("/posts/:id/comments", (req, res) => {
   }
 });
 
-app.post("/posts/:id/comments", async (req, res) => {
+app.post("/post/:id/comment_create", async (req, res) => {
   const { id: postId } = req.params;
 
   const { content } = req.body;
