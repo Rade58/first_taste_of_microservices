@@ -326,8 +326,97 @@ A ZASTO?
 - `code posts/index.js`
 
 ```js
+const express = require("express");
+const { json, urlencoded } = require("body-parser");
+const { randomBytes } = require("crypto");
+const cors = require("cors");
+const { default: axios } = require("axios");
+
+const app = express();
+
+app.use(cors());
+app.use(json());
+app.use(urlencoded({ extended: true }));
+
+const posts = { someid: { id: "someid", title: "foo bar baz" } };
+
+app.post("/events", async (req, res) => {
+  const { type, payload } = req.body;
+
+  console.log({ type, payload });
+
+  res.send({});
+});
+
+app.get("/posts", (req, res) => {
+  res.status(200).send(posts);
+});
+
+// EVO KAKO VIDIS OVAJ ROUTE JE ODGOVORAN ZA KREIRANJE NOVOG POST
+// DOKUMENTA U IN MEMORY DATABASE-U (OBICNOM JAVASCRIPT OBJEKTU)
+// ALI KAKO VIDIS, NJEGOV ROUTE JE /posts
+// app.post("/posts", async (req, res) => {
+// MEDJUTIM JA SAM DEFINISAO DA INGRESS CONTROLLER DIRECT-UJE TRAFFIC TO /create
+// ZATO SAM OVO IMENIO DA BU DE /create
+app.post("/create", async (req, res) => {
+  const { title } = req.body;
+  const id = randomBytes(4).toString("hex");
+  posts[id] = { id, title };
+
+  try {
+    const response = axios.post("http://event-bus-srv:4005/events", {
+      type: "PostCreated",
+      payload: posts[id],
+    });
+  } catch (err) {
+    console.error("Something went wrong", err);
+    res.end();
+  }
+
+  res.status(201).send(posts[id]);
+});
+
+const port = 4000;
+
+app.listen(port, () => {
+  console.log("v108");
+
+  console.log(`listening on: http://localhost:${port}`);
+});
 
 ```
+
+## ALI SADA MORAS DA REBUILD-UJES DOCKER IMAGE, PUSH-UJES GA U DECKER HUB I ONDA RESTART-UJES DEPLOYMRNT, A KOJ ICE DURING THAT UZETI NOVI IMAGE, I SA NJI MDALJE SAGRADITI NOVI PO I UNISTITI PREDHODNI
+
+- `cd posts`
+
+- `docker images`
+
+```zsh
+REPOSITORY                    TAG              IMAGE ID       CREATED        SIZE
+radebajic/query               latest           42011a95431f   45 hours ago   125MB
+radebajic/event_bus           latest           048ba80dba60   46 hours ago   125MB
+radebajic/query               <none>           e2d1b50fbf03   46 hours ago   125MB
+radebajic/comments            latest           9e74d6df602c   46 hours ago   125MB
+radebajic/moderation          latest           372340ff8531   46 hours ago   125MB
+radebajic/event_bus           <none>           0d23effcbbb2   2 days ago     125MB
+radebajic/posts               latest           c2a3c909a16b   2 days ago     125MB
+radebajic/event_bus           <none>           d4bb9439e1e3   2 days ago     125MB
+radebajic/posts               <none>           407c80c78664   2 days ago     125MB
+node                          lts-alpine3.12   8f86419010df   11 days ago    117MB
+gcr.io/k8s-minikube/kicbase   v0.0.18          a776c544501a   3 weeks ago    1.08GB
+```
+
+- `docker build -t radebajic/posts .`
+
+- `docker push radebajic/posts`
+
+DAKLE SADA CU DA RELOAD-UJEM TAJ DEPLOYMENT KOJI CE SA DOCKER HUB-UZETI IMAGE I NAPRAVITI NOVI PODS ZA posts MICROSERVICE NODE, ODNOSNO EXPRESS APLIKACIJU
+
+- `k get deployments`
+
+- ``
+
 
 
 ## STO SE TICE REACT APPLIKACIJE, POTREBNO JE DA IZMENIMO CODE U KOJEM PRAVIM REQUEST-OVE, KAKO BI ONI HITTOVALI `myblog.com`, ALI PRE TOGA MORACU DA POVEZEM JOS JEDAN CLUSTER API SERVICE SA INGRESS CONTROLLEROM; ZATO STO IZ MOG REACT APP-A JA SALJEM REQUESTS ZA GETTING ALL POSTS, KOJI TREBA DA HITT-UJE query MICROSERVICE

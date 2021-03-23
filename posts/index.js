@@ -24,15 +24,18 @@ app.get("/posts", (req, res) => {
   res.status(200).send(posts);
 });
 
-app.post("/posts", async (req, res) => {
+// EVO KAKO VIDIS OVAJ ROUTE JE ODGOVORAN ZA KREIRANJE NOVOG POST
+// DOKUMENTA U IN MEMORY DATABASE-U (OBICNOM JAVASCRIPT OBJEKTU)
+// ALI KAKO VIDIS, NJEGOV ROUTE JE /posts
+// app.post("/posts", async (req, res) => {
+// MEDJUTIM JA SAM DEFINISAO DA INGRESS CONTROLLER DIRECT-UJE TRAFFIC TO /create
+// ZATO SAM OVO IMENIO DA BU DE /create
+app.post("/create", async (req, res) => {
   const { title } = req.body;
   const id = randomBytes(4).toString("hex");
   posts[id] = { id, title };
 
   try {
-    // UMESTO OVOGA
-    // const response = await axios.post("http://localhost:4005/events", {
-    //  PISEM OVO (NE ZABORAVI /events)
     const response = axios.post("http://event-bus-srv:4005/events", {
       type: "PostCreated",
       payload: posts[id],
