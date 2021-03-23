@@ -415,7 +415,57 @@ DAKLE SADA CU DA RELOAD-UJEM TAJ DEPLOYMENT KOJI CE SA DOCKER HUB-UZETI IMAGE I 
 
 - `k get deployments`
 
-- ``
+```zsh
+NAME              READY   UP-TO-DATE   AVAILABLE   AGE
+comments-depl     1/1     1            1           46h
+event-bus-depl    1/1     1            1           2d4h
+moderation-depl   1/1     1            1           46h
+posts-depl        1/1     1            1           2d22h
+query-depl        1/1     1            1           46h
+
+```
+
+- `cd posts`
+
+- `kubectl rollout restart deployment posts-depl`
+
+## SADA BI TREBAL ODA JE ONAJ NODE APP KOJI JE U PODU posts MICROSERVICE-A PROMENJEN
+
+HAJDE CISTO RADI VEZBE DA VIDIS DA LI CODE PROMENJEN
+
+UCI CU U SHELL TOG RUNNING POD-A
+
+- `k get pods`
+
+```zsh
+NAME                              READY   STATUS    RESTARTS   AGE
+comments-depl-7f85b5f495-nhtsd    1/1     Running   6          46h
+event-bus-depl-74c646ff5c-mth5g   1/1     Running   6          45h
+moderation-depl-fc77b94df-xngmn   1/1     Running   6          46h
+posts-depl-86ccd45d89-slp4r       1/1     Running   0          68s
+query-depl-76bb598fcd-shq2n       1/1     Running   6          44h
+```
+
+ZELIM DA LOOK-UJEM INTO FILE SYSTEM `posts-depl-86ccd45d89-slp4r` PODA
+
+- `kubectl exec -it posts-depl-86ccd45d89-slp4r sh`
+
+```sh
+/app # ls
+Dockerfile         index.js           node_modules       package-lock.json  package.json       yarn.lock
+/app # cat index.js
+# DA TI NE PRIKAZUJEM CEO FIE, ALI VIDECES DA JE
+# ZAISTA PROMENJNO ONO STO JE TREBALO DA SE
+# ANTICEAPATE-UJE REQUEST ZA /create A NE ZA /posts
+app.post("/create", async (req, res) => {
+...
+
+/app # exit
+```
+
+# E SADA CU DA POSALJEM POST REQUEST KA `myblog.com/create`
+
+- `http POST myblog.com/create title="Hi I am Stavros"`
 
 
 
