@@ -227,9 +227,107 @@ O OVOJ TEM ISAM PROCITAO OVDE
 
 **DAKLE ZATO SAM U KONFIGURACIJI ZADAO ONAJ `pathType`; DA NISAM, FAIL-OVAL BI KONFIGURACIJA**
 
-# PROBACU DA SPECIFICIRAM PATH, KOJIM BI DIRECT-OVO TRAFFIC DO CKUSTER IP SERVICE-A ONOG PODA-A, MICROSERVICE-A, CIJA JE ULOGA KRIRANJE JEDNOG BLOG POST-A
+# PROBACU DA SPECIFICIRAM PATH, KOJIM BI DIRECT-OVO TRAFFIC DO CLUSTER IP SERVICE-A ONOG PODA-A, MICROSERVICE-A, CIJA JE ULOGA KRIRANJE JEDNOG BLOG POST-A
 
+- `code infra/k8s/ingress-srv.yaml`
 
+EVO TO SAM URADIO
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-srv
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+    - host: "myblog.com"
+      http:
+        paths:
+          - path: /create
+            pathType: Exact
+            backend:
+              service:
+                name: posts-srv
+                port:
+                  number: 4000
+          - path: /posts
+            pathType: Exact
+            backend:
+              service:
+                name: query-srv
+                port:
+                  number: 4002
+```
+
+DAKLE U PITANJU JE `posts-srv` CLUSTER IP SERVICE, SA PORTOM 4000
+
+ONO STO TI MOZE BITI INTERESANTNO JESTE, STO SAM ZA PATH SPECIFICIRAO `/create` (IM SMISLA JER SE RDI O KREIRANJU POST-A)
+
+SADA CU DA LOOK-UJEM INTO INGRESS CONTROLLER ONCE AGAIN
+
+- `kubectl describe ingress ingress-srv`
+
+```zsh
+Name:             ingress-srv
+Namespace:        default
+Address:          192.168.49.2
+Default backend:  default-http-backend:80 (<error: endpoints "default-http-backend" not found>)
+Rules:
+  Host        Path  Backends
+  ----        ----  --------
+  myblog.com  
+              /create   posts-srv:4000 (172.17.0.5:4000)
+              /posts    query-srv:4002 (172.17.0.6:4002)
+Annotations:  kubernetes.io/ingress.class: nginx
+Events:
+  Type    Reason  Age                From                      Message
+  ----    ------  ----               ----                      -------
+  Normal  UPDATE  42m (x2 over 63m)  nginx-ingress-controller  Ingress default/ingress-srv
+
+```
+
+**ALI AKO MAKE-UJES REQUEST AGAINST `/create` DOBICES 404**
+
+HAJDE DA PROBAMO
+
+- `http POST myblog.com/create title="Hi I am Stavros"`
+
+```zsh
+HTTP/1.1 404 Not Found
+Access-Control-Allow-Origin: *
+Connection: keep-alive
+Content-Length: 146
+Content-Security-Policy: default-src 'none'
+Content-Type: text/html; charset=utf-8
+Date: Tue, 23 Mar 2021 18:30:48 GMT
+X-Content-Type-Options: nosniff
+X-Powered-By: Express
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Error</title>
+</head>
+<body>
+<pre>Cannot POST /create</pre>
+</body>
+</html>
+```
+
+**DAKLE ZAISTA SAM DOBIO 404**
+
+A ZASTO?
+
+# PA TVOJ NODE, ODNOSNO EXPRESS posts MICROSERVICE (NA CIJI CLUTER IP SERVICE TI SALJES TRAFFIC) NE HANDLE-UJE PATH `/create`; I TO MOZES SADA DA ISPRAVIS
+
+- `code posts/index.js`
+
+```js
+
+```
 
 
 ## STO SE TICE REACT APPLIKACIJE, POTREBNO JE DA IZMENIMO CODE U KOJEM PRAVIM REQUEST-OVE, KAKO BI ONI HITTOVALI `myblog.com`, ALI PRE TOGA MORACU DA POVEZEM JOS JEDAN CLUSTER API SERVICE SA INGRESS CONTROLLEROM; ZATO STO IZ MOG REACT APP-A JA SALJEM REQUESTS ZA GETTING ALL POSTS, KOJI TREBA DA HITT-UJE query MICROSERVICE
