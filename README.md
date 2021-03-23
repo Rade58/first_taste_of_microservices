@@ -75,13 +75,15 @@ spec:
                 name: query-srv
                 port:
                   number: 4002
-          - path: /post/?(.*)/create_comment
+          - path: /post/?(.*)/comment_create
             pathType: Exact
             backend:
               service:
                 name: comments-srv
                 port:
                   number: 4001
+
+
 
 
 ```
@@ -91,6 +93,80 @@ A KAO STO VIDIS DODAO SAM I NOVI PATH, KOJI FORMIRA URL SA OSTALIM STVARIMA, UST
 ALI TAJ PATH KAO STO VIDIS IMA REGULAR EXPRESSION; SECAM SE DA OVAJ OVAKAV REGEXP: `?(.*)` PRVO ZNACI DA MOZE DA SE MATCH-UJE I NISTA (AKO NE STAVIS NISTA), A ONO U ZAGRADI GOVORI DA JE REC O BILO KOJEM KARAKTERU I DA KARAKTERA MOZE BITI NULA ILI VISE
 
 ISTO TAKO VAAN JE I `pathType` A O TOME SAM VISE SAZNAO NA <https://kubernetes.io/docs/concepts/services-networking/ingress/#path-types>
+
+# REBUILD-OVACU OVU INGRESS KONFIGURACIJU, PA CU POKUSATI DA POSALJEM POST REQUEST PREMA `myblog.com/post/:id/create_comment`
+
+- `cd infra/k8s`
+
+- `kubectl apply -f ingress-srv.yaml`
+
+- `kubectl ingress `
+
+- `kubectl describe ingress ingress-srv`
+
+```zsh
+Name:             ingress-srv
+Namespace:        default
+Address:          192.168.49.2
+Default backend:  default-http-backend:80 (<error: endpoints "default-http-backend" not found>)
+Rules:
+  Host        Path  Backends
+  ----        ----  --------
+  myblog.com  
+              /create                      posts-srv:4000 (172.17.0.9:4000)
+              /posts                       query-srv:4002 (172.17.0.6:4002)
+              /post/?(.*)/comment_create   comments-srv:4001 (172.17.0.5:4001)
+Annotations:  kubernetes.io/ingress.class: nginx
+              nginx.ingress.kubernetes.io/use-regex: true
+Events:
+  Type    Reason  Age                  From                      Message
+  ----    ------  ----                 ----                      -------
+  Normal  UPDATE  11s (x5 over 4h19m)  nginx-ingress-controller  Ingress default/ingress-srv
+```
+
+**KREIRACU JEDAN POST, DA BI SAMO UZEO NJEGOV ID**
+
+- `http POST myblog.com/create title="Stavros is going"`
+
+```zsh
+HTTP/1.1 201 Created
+Access-Control-Allow-Origin: *
+Connection: keep-alive
+Content-Length: 44
+Content-Type: application/json; charset=utf-8
+Date: Tue, 23 Mar 2021 21:43:43 GMT
+ETag: W/"2c-o3F760Cd8jLCod9KROeLgkM858k"
+X-Powered-By: Express
+
+{
+    "id": "792c3a67",
+    "title": "Stavros is going"
+}
+```
+
+UZIMAM ID POST-A, DA KRIRAM KOMANTAR, A KOMANTAR ZADAJES KAO content (content FIELD SE OCEKUJE U BODY-JU REQUEST-A)
+
+- `http POST myblog.com/post/792c3a67/comment_create content="hi, my name is cool Adam"`
+
+I USPESNO SAM KREIRA OCOMMENT
+
+```zsh
+HTTP/1.1 201 Created
+Access-Control-Allow-Origin: *
+Connection: keep-alive
+Content-Length: 73
+Content-Type: application/json; charset=utf-8
+Date: Tue, 23 Mar 2021 21:44:18 GMT
+ETag: W/"49-Z1yJNuqwxBtwSMp2z+mVsFZ94t4"
+X-Powered-By: Express
+
+{
+    "content": "hi, my name is cool Adam",
+    "id": "ec9b82d2",
+    "status": "pending"
+}
+```
+
 
 ## STO SE TICE REACT APPLIKACIJE, POTREBNO JE DA IZMENIMO CODE U KOJEM PRAVIM REQUEST-OVE, KAKO BI ONI HITTOVALI `myblog.com`, ALI PRE TOGA MORACU DA POVEZEM JOS JEDAN CLUSTER API SERVICE SA INGRESS CONTROLLEROM; ZATO STO IZ MOG REACT APP-A JA SALJEM REQUESTS ZA GETTING ALL POSTS, KOJI TREBA DA HITT-UJE query MICROSERVICE
 
@@ -287,27 +363,3 @@ const PostList: FC = () => {
 export default PostList;
 
 ```
-
-
-***
-***
-***
-***
-***
-***
-***
-
-```yaml
-nginx.ingress.kubernetes.io/use-regex: "true"
-```
-
-```yaml
-- path: /posts/create
-  pathType: Prefix
-  backend:
-    service:
-      name: posts-srv
-      port:
-        number: 4001
-```
-
