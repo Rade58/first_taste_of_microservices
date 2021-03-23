@@ -23,3 +23,11 @@ spec:
                 name: query-srv
                 port:
                   number: 4002
+          - path: /post/?(.*)/create_comment
+            pathType: Exact
+            backend:
+              service:
+                name: comments-srv
+                port:
+                  number: 4001
+
