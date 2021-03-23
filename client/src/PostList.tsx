@@ -6,9 +6,6 @@ import CommentCreate from "./CommentCreate";
 import CommentList from "./CommentList";
 
 const PostList: FC = () => {
-  // POSTS NOW HAVE MORE DATA ON THEM
-  // const [posts, setPosts] = useState<{ title: string; id: string }[]>([]);
-  // THEY HAVE COMMENTS ON THEM TOO
   const [posts, setPosts] = useState<
     {
       id: string;
@@ -23,21 +20,15 @@ const PostList: FC = () => {
   >([]);
 
   const getPostsCallback = useCallback(async () => {
-    // INSTEAD OF POSTS SERVICE
-    /* const res = await axios.get("http://localhost:4000/posts", {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    */
-    // I'LL HIT QUERY SERVICE
-    const res = await axios.get("http://localhost:4002/posts", {
+    // UMESTO OVOGA
+    // const res = await axios.get("http://localhost:4002/posts", {
+    // PISEM OVO
+    const res = await axios.get("http://myblog.com/posts", {
       headers: {
         "Content-Type": "application/json",
       },
     });
 
-    // JUST ADDING COMMENTS TO TYPE (TYPESCRIPT)
     const posts: {
       [key: string]: {
         title: string;
@@ -62,7 +53,6 @@ const PostList: FC = () => {
 
   return (
     <div>
-      {/* RETRUCTURING ALSO COMMENTS */}
       {posts.map(({ id, title, comments }) => (
         <div
           key={id}
@@ -72,8 +62,7 @@ const PostList: FC = () => {
           <div className="card-body">
             <h3>{title}</h3>
             <CommentCreate postId={id} />
-            {/* NEED TO DO PROP DRILLING TO GIVE COMMENTS
-            TO COMMENTS LIST */}
+
             <CommentList postId={id} comments={comments} />
           </div>
         </div>

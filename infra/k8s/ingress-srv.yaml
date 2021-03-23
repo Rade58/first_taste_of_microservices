@@ -13,3 +13,11 @@ spec:
             backend:
               serviceName: query-srv
               servicePort: 4002
+          - path: /create_post
+            backend:
+              serviceName: posts-srv
+              servicePort: 4000
+          - path: /create_comment
+            backend:
+              serviceName: comments-srv
+              servicePort: 4001

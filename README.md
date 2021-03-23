@@ -1,17 +1,5 @@
 # DEPLOYING THE REACT APP
 
-***
-***
-
-digresija:
-
-U PROSLOM BRANCH-U SAM POGRESNO DEFINISAO KOJ JE TO CLUSTER IP SERVISE PREMA KOJEM INGRESS CONTROLLER PROSLEDJUJE TRAFFIC
-
-A TO CU POPRAVITI OVDE
-
-***
-***
-
 MORAM SE PRVO PODSETITI STA SAM URADIO U PROSLOM BRANCH-U
 
 DAKLE U PROSLOM BRANCH-U SAM NAPRAVIO CONFIG ZA `INGRESS CONTROLLER`
@@ -69,21 +57,29 @@ AKO SE PITAS ZASTO SVE OVO POMENUTO, SAMO IZCITAJ PROSLI BRANCH, JER SAM TAM OSV
 ***
 ***
 
-## STO SE TICE REACT APPLIKACIJE, POTREBNO JE DA IZMENIMO CODE U KOJEM PRAVIM REQUEST-OVE, KAKO BI ONI HITTOVALI `myblog.com`, ALI MORACU DA POPRAVIM JEDNU GRESKU SA INGRESS-OM, KOJA NIJE GRESKA VEC SAMO DIRECTING TRAFFIC-A DO POGRESNOG CLUSTER API SERBVICE-A
+## STO SE TICE REACT APPLIKACIJE, POTREBNO JE DA IZMENIMO CODE U KOJEM PRAVIM REQUEST-OVE, KAKO BI ONI HITTOVALI `myblog.com`, ALI PRE TOGA MORACU DA POVEZEM JOS JEDAN CLUSTER API SERVICE SA INGRESS CONTROLLEROM; ZATO STO IZ MOG REACT APP-A JA SALJEM REQUESTS ZA GETTING ALL POSTS, KOJI TREBA DA HITT-UJE query MICROSERVICE
 
-ZATO STO SADA JA PRAVIM REQUESTS PREMA query MICROSERVICE-U KAO DA JE TAJ MICROERVICE NA ISTOJ VIRTUAL MACHINE-I ILI ISTOM RACUNARU KAO I REACT APP IZ KOJEG SALJEM REQUESTS, KORISTI SE LOCALHOST
+NAIME, JA SAM PODESIO DA DA INGRESS CONTROLLER RAZGOVARA SA CLUSTER IP SERVICE-OM KOJI JE IN FRONT OF POD U KOJEM JE CONTAINER `posts` MICROSERVICE-A
 
-A ONO OD CEGA TREBAM DA SAGRADIM URL, JESTE `myblog.com` I TO CE SLATI REQUEST DO INGRESS CONTROLLER-A, I MORAM DODATI EKSTENZIJU, ONDONO ROUTE, KOJI SAM DEFINISAO KAO ROUTE DO KOJEG INGRESS KONTROLER PROSLEDJUJE REQUEST
+ALI TAJ POMNUTI MICROSERVICE JE KOD MENE DEFINISAN SAMO DA PRIHVATA SINGLE DOCUMENT CREATION, STO ZNACI DA SE AGAINT MICROSERVICE SALJE 'POST' REQUEST A U BODY-JU JE title PROPERTI SA IMENOM POST-A
 
-JA SAM NAPRAVIO GRESKU DEFINISUCI INGRESS KONTROLER-A, ZATO STO SAM EXPOSE-OVAO IPAK POGRESAN CLUSTER IP
+SLEDECA STVAR JE KREIRANJE COMMENTSA, STO SE OBAVLJA KROZ `comments` MICROSERVICE
 
-ZASTO TO KAZEM?
+I TREBA EXPOSE-OVATI I `query` MICROSERVICE
 
-ZATO STO JE MOJA REACT APLIKACIJA ORIGINALNO TREBALA DA KOMUNICARA SAM OSA query MICROSERVISOM, A JA SAM EXPOSE-OVAO posts MICROSERVIS
+## TAKO DA CI POPRAVITI TO SADA REDEFINISUCI INGRESS CONTROLLER KONFIGURACIJU, REDEFINISUCI SVE TAKO DA DEFINISEM DA INGRESS CONTROLLER PROSLEDJUJE TRAFFIC DO CLUSTER IP SERVICE-A, KOJI SEDE IN FRONT OF PODS ZA `posts` MICROSERVICE, ZATIM `comments` MICROSERVICE, ZATIM I `query` MICROSERVICE
 
-## TAKO DA CI POPRAVITI TO SADA REDEFINISUCI INGRESS CONTROLLER KONFIGURACIJU
+ZATO CU POTPUNO IZMENITI TAJ DEO KONFIGURACIJE SA ROUTE-OVIMA
 
-DKLE TREBAM CLUSTER IP SERVIS ZA query A NE ZA posts
+PATH KOJ CU ZADATI ZA query-srv CLUSTER IP SERVICE BICE `/posts` JER RELATED NODE APLIKACIJA SERVIRA SVE POSTOVE I COMENTARE U JEDNOM TOM REQUEST-U
+
+PATH KOJI CU ZADATI ZA posts-srv CLUSTER IP SERVICE BICE `/create_post` JER TAJ IP SERVICE STOJI ISPRED NODE APLIKACIJE ZA KREIRANJE SINGLE POST-A
+
+PATH KOJI CU ZADATI ZA comments-srv CLUSTER IP SERVICE BICE `/create_comment` JER TAJ IP SERVICE STOJI ISPRED NODE APLIKACIJE ZA KREIRANJE SINGLE COMMENT-A
+
+**LOGICNO SAM RAZMISLJAO KAKVI TREBA DA BUDU OVI POMENUTI ROTE-OVI I ZATO SAM IH TAKO ZADAVAO**
+
+DAKLE TREBAM CLUSTER IP SERVISE
 
 - `k get services`
 
@@ -98,7 +94,7 @@ posts-srv        ClusterIP   10.105.230.95    <none>        4000/TCP         45h
 query-srv        ClusterIP   10.101.226.177   <none>        4002/TCP         38h
 ```
 
-DAKLE ODOZGO MENI TREBA query-srv KAO TAJ SA KOJI INGRESS KONTROLLER IMA TRAFFIC IZMEDJU
+DAKLE ODOZGO MENI TREBA query-srv, comments-srv I posts-srv, JER SU TI CLUSTER IP SERVISI SA KOJIMA INGRESS KONTROLLER TREBA DA IMA TRAFFIC IZMEDJU
 
 - `code infra/k8s/ingress-srv.yaml`
 
@@ -117,18 +113,29 @@ spec:
           - path: /posts
           - path: 
             backend:
+              # ZATO STO Qquery MIKROSERVISE TREBA DA UZME
+              # SVE POSTS ICOMMENTS (ZATO JE LOGICN ODA ON IMA
+              # /posts)
               # UMESTO OVOGA 
               # serviceName: posts-srv
               # OVO
               serviceName: query-srv
-              # UMESTO OVOGA 
+              # I UMESTO OVOGA 
               # servicePort: 4000
               # OVO
               servicePort: 4002
+          # A SADA CU DA SPECIFICIRAM I NOVA DVA CLUSTER IP SERVISA
+          - path: /create_post
+            backend:
+              serviceName: posts-srv
+              servicePort: 4000
+          - path: /create_comment
+            backend:
+              serviceName: comments-srv
+              servicePort: 4001
 
 ```
 
-/posts MI ODGOVARA JER JE TAKAV EXPRESS ENDPOINT U query MICROSERVICE-U
 
 - `cd infra/k8s`
 
@@ -151,5 +158,87 @@ ETag: W/"2-vyGp6PvFo4RvsFtPoIWeCReyIC8"
 X-Powered-By: Express
 
 {}
+
+```
+
+# SADA MOZES DA PREPRAVIS URL-OVE U REACT APLIKCIJI, ODNOSNO URL-OVE U FRONT END CODE-U, AGAINST WHO YOU ARE SNEDING NETWORK REQUESTS
+
+- `code client/src/PostList.tsx`
+
+```tsx
+import React, { FC, useCallback, useEffect, useState } from "react";
+import axios from "axios";
+
+import CommentCreate from "./CommentCreate";
+
+import CommentList from "./CommentList";
+
+const PostList: FC = () => {
+  const [posts, setPosts] = useState<
+    {
+      id: string;
+      title: string;
+      comments: {
+        id: string;
+        content: string;
+        postId: string;
+        status: string;
+      }[];
+    }[]
+  >([]);
+
+  const getPostsCallback = useCallback(async () => {
+    // UMESTO OVOGA
+    // const res = await axios.get("http://localhost:4002/posts", {
+    // PISEM OVO
+    const res = await axios.get("http://myblog.com/posts", {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const posts: {
+      [key: string]: {
+        title: string;
+        id: string;
+        comments: {
+          id: string;
+          content: string;
+          postId: string;
+          status: string;
+        }[];
+      };
+    } = res.data;
+
+    const normalizedPosts = Object.values(posts);
+
+    setPosts(normalizedPosts);
+  }, [setPosts]);
+
+  useEffect(() => {
+    getPostsCallback();
+  }, [getPostsCallback]);
+
+  return (
+    <div>
+      {posts.map(({ id, title, comments }) => (
+        <div
+          key={id}
+          className="card d-flex flex-row flex-wrap justify-content-between"
+          style={{ width: "30%", marginBottom: "20px" }}
+        >
+          <div className="card-body">
+            <h3>{title}</h3>
+            <CommentCreate postId={id} />
+
+            <CommentList postId={id} comments={comments} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default PostList;
 
 ```
