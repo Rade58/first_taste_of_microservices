@@ -9,7 +9,7 @@ spec:
     - host: "myblog.com"
       http:
         paths:
-          - path:
+          - path: /create
             pathType: Exact
             backend:
               service:
