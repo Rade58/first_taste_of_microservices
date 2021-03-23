@@ -9,7 +9,13 @@ spec:
     - host: "myblog.com"
       http:
         paths:
-
+          - path:
+            pathType: Exact
+            backend:
+              service:
+                name: posts-srv
+                port:
+                  number: 4000
           - path: /posts
             pathType: Exact
             backend:
