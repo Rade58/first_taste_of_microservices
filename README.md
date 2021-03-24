@@ -163,6 +163,40 @@ KADA SE AHTEVA PATH, KOJI JE :  `/` + `NESTO`
 
 **PRVO CE SE MATCH-OVATI DA LI JE TO NESTO `/create`; AKO TO NIJE ONDA CE SE TRAZITI MATCH ZA `/posts`; AKO TO NIJE, TRAZICE SE MATCHING ZA `/post/?(.*)/comment_create`; I TEK AKO TO NIJE BICE MATCHED `/ + 'BILO STA'`, ILI OBJASNJENO REGEXPOM TO JE ?(.*)** 
 
+SADA CU DA REBUILD-UJEM INGRESS
+
+- `cd infra/k8s`
+
+- `kubectl apply -f ingress-srv.yaml`
+
+- `kubectl describe ingress ingress-srv`
+
+```zsh
+Name:             ingress-srv
+Namespace:        default
+Address:          192.168.49.2
+Default backend:  default-http-backend:80 (<error: endpoints "default-http-backend" not found>)
+Rules:
+  Host        Path  Backends
+  ----        ----  --------
+  myblog.com  
+              /create                      posts-srv:4000 (172.17.0.3:4000)
+              /posts                       query-srv:4002 (172.17.0.2:4002)
+              /post/?(.*)/comment_create   comments-srv:4001 (172.17.0.5:4001)
+              /?(.*)                       client-srv:3000 (172.17.0.9:3000)
+Annotations:  kubernetes.io/ingress.class: nginx
+              nginx.ingress.kubernetes.io/use-regex: true
+Events:
+  Type    Reason  Age                From                      Message
+  ----    ------  ----               ----                      -------
+  Normal  CREATE  71m                nginx-ingress-controller  Ingress default/ingress-srv
+  Normal  CREATE  71m                nginx-ingress-controller  Ingress default/ingress-srv
+  Normal  UPDATE  70m                nginx-ingress-controller  Ingress default/ingress-srv
+  Normal  CREATE  56m                nginx-ingress-controller  Ingress default/ingress-srv
+  Normal  CREATE  56m                nginx-ingress-controller  Ingress default/ingress-srv
+  Normal  UPDATE  22s (x2 over 56m)  nginx-ingress-controller  Ingress default/ingress-srv
+
+```
 
 ****
 
