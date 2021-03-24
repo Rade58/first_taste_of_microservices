@@ -56,7 +56,45 @@ AKO SE SECAS, VEC SAM PODESIO Dockerfile U REACT APP-U
 
 ## MOGU SADA POCETI DA DEFINISEM KONFIGURACIJU ZA PRAVLJENJE DEPLOYMENT OBJECT-A, KAO I CLUSTER IP SERVIICE-A ZA POD U KOJEM CE BITI NAS REACT APP
 
+MOZES KOPIRATI NEKU DRUGU KONFIGURACIJU DEPLOYMENT-A I CLUSTER IP SERVICE-A, RECIMO `infra/k8s/posts-depl.yaml` I SAMO JE PREPRAVITI
 
+- `touch infra/k8s/client-depl.yaml`
+
+VODI RACUNA DA UPISES PRAVI PORT (REACT APP SE SERVE-UJE NA PORTU 3000)
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: client
+  template:
+    metadata:
+      labels:
+        app: client
+    spec:
+      containers:
+        - name: client
+          image: radebajic/client:latest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-srv
+spec:
+  selector:
+    app: client
+  type: ClusterIP
+  ports:
+    - name: client
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
+```
 
 ***
 ***
