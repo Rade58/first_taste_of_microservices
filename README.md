@@ -99,6 +99,24 @@ I U NJEMU CU PISATI SLICNU KONFIGURACIJU KAO STO SAM RANIJE PISAO A NAS KUBERNET
 OVAJ NAPISAN FILE JE STVAR KOJA SE PISE SAMO JEDNOM PA SE TAKO RECI KOPIRA I PAST-UJE, JER JE SLICAN OD PROJEKTA DO PROJEKTA
 
 ```yaml
+apiVersion: skaffold/v2beta13
+kind: Config
+deploy:
+  kubectl:
+    manifests:
+      - ./infra/k8s/*
+build:
+  local:
+    push: false
+  artifacts:
+    - image: radebajic/client
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.{ts,js,jsx,tsx}'
+            dest: .
 
 ```
 
@@ -127,3 +145,80 @@ U build DELU DISABLED JE PUSHING IMAGE-A TO DOCKERHUB, JER TO MI NIJE REQUIRED K
 artifacts SECTION GOVORI SKAFFOLD-U O NECEMU INSIDE PROJECT DA TREBA MAINTAIN-OVATI
 
 `GOVORIMO SKAFFOLDU DA POSTOJI JEDAN pod KOJI CE RUNN-OVATI CODE IZS NJEGOVOG client DIREKTORIJUMA`
+
+KADA SE GOD NESTO PROMENI U `client` DIREKTORIJUMU, SCAFOLD CE POKUSATI DA TAKE-UJE THOSE CHANGES I NEKAKO UPDATE-UJE OUR POD
+
+PA AKO POKUSAS DA PROMENIS NA PRIMER tsx FILE, SKAFFOLD CE POKUSATI DA TAKE-UJE THAT CHANGES I DIREKTNO IH THROW-UJE INSIDE POD
+
+**DAKLE TIME CE NAS POD (POD NASE REACT APLIKACIJE) IMATI LATEST CODE INSIDE OF IT**
+
+ALI KAO PROMENIS BILO STA U client DIRECTORIJU, A NE NALZI SE INSIDE src; UMESTO TOGA CE SKAFFOLD POKUSATI DA IGRADI ENTIRE IMAGE
+
+AKO NA PRIMER INSTALIRAS NEW DEPENDANCI INTO CLIENT PROJECT, TO CE MENJATI package.json I TEHNICKI I package.lock I node_modules DIREKTORIJUM (DAKLE DRUGA PROMENA U PROJEKTU KOJA SE NE ODNOSI NA NASE REACT KOMPONENTE); **DAKLE TADA CE SKAFFOLD DECIDE-OVATI DA REBULD-UJE ENTIRE IMAGE ZA REACT APP , `ALI TAKODJE CE UPDATE-OVATI RELATED DEPLOYMENT`**
+
+ALI JA ZELI MTAJ RULE I ZA DRUGE POD-OVE, ODNOSNO I ZA PODOVE DRUGIH MICROSERVICES
+
+- `code skaffold.yaml`
+
+TU MORAS DA ZADAAS DRUGACIJE PRAVILO ZA `src` JER U EXPRESS SERVER PROJEKTU IMAS SAMO index.js FILE
+
+```yaml
+apiVersion: skaffold/v2beta13
+kind: Config
+deploy:
+  kubectl:
+    manifests:
+      - ./infra/k8s/*
+build:
+  local:
+    push: false
+  artifacts:
+    - image: radebajic/client
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'src/**/*.{ts,js,jsx,tsx}'
+            dest: .
+    - image: radebajic/posts
+      context: posts
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '*.js'
+            dest: .
+    - image: radebajic/comments
+      context: comments
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '*.js'
+            dest: .
+    - image: radebajic/moderation
+      context: moderation
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '*.js'
+            dest: .
+    - image: radebajic/query
+      context: query
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '*.js'
+            dest: .
+    - image: radebajic/event_bus
+      context: event_bus
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: '*.js'
+            dest: .
+```
