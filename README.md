@@ -20,16 +20,6 @@ Also number of comments will be displayed
 
 Separate service for each resource
 
-**AP FOR PRACTICING AND LEARNING SOME CONCEPTS ABOUT MICROSERVICES**
+**APP FOR PRACTICING AND LEARNING SOME CONCEPTS ABOUT MICROSERVICES**
 
-# Resources
-
-Posts
-
-Comments
-
-# Services
-
-Posts Service (Creating post ,Retreiving all posts and giving them back to us)
-
-Comments Service (Handling comment creation; listting all comments)
+# Built with docker and kubernetes
