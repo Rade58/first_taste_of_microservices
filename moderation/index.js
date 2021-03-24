@@ -12,8 +12,7 @@ app.post("/events", async (req, res) => {
   if (type === "CommentCreated") {
     const { content, id, postId } = payload;
 
-    // YOU CAN USE TRNARY TO DECIDE MODERATION
-    const forbidden = ["foobar", "bazmod"];
+    const forbidden = ["foobar"];
 
     console.log({ content });
 
@@ -21,8 +20,10 @@ app.post("/events", async (req, res) => {
 
     console.log({ newStatus });
 
-    // I CAN NOW SEND "CommentModerated" EVENT TO THE EVENT BUS
-    await axios.post("http://localhost:4005/events", {
+    // UMESTO OVOGA
+    // await axios.post("http://localhost:4005/events", {
+    // OVO
+    await axios.post("http://event-bus-srv:4005/events", {
       type: "CommentModerated",
       payload: {
         id,
