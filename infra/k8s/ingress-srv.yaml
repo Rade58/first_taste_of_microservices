@@ -31,4 +31,11 @@ spec:
                 name: comments-srv
                 port:
                   number: 4001
+          - path: /?(.*)
+            pathType: Exact
+            backend:
+              service:
+                name: client-srv
+                port:
+                  number: 3000
 

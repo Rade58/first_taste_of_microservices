@@ -104,9 +104,67 @@ GRADIM DEPLOYMENT OBJECT I CLUSTER IP SERVICE ZA MOJ REACT APP
 
 DKLE APLICIRAO SMA POMENUTUE KONFIGURACIJE NA MOJ KUBERNETES CLUSTER
 
-# SADA TREBAM DA MODIFIKUJEM NGNIX KAKO BI INGRESS CONTROLLER USTVARI DIRECT-OVAO TRAFFIC DO client-srv CLUSTER IP SEVICE-A, KADA KORISNIK REGUEST-UJE `/`
+# SADA TREBAM DA MODIFIKUJEM NGNIX KAKO BI INGRESS CONTROLLER USTVARI DIRECT-OVAO TRAFFIC DO client-srv CLUSTER IP SEVICE-A, KADA KORISNIK REQUEST-UJE `/`, ALI NE SAMO / VEC I `/` A IZA NJEGA BIILO STA STO NIJE ONO STO JE DEO DRUGIH PATH-OVA
+
+- `code infra/k8s/ingress-srv.yaml`
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-srv
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  rules:
+    - host: "myblog.com"
+      http:
+        paths:
+          - path: /create
+            pathType: Exact
+            backend:
+              service:
+                name: posts-srv
+                port:
+                  number: 4000
+          - path: /posts
+            pathType: Exact
+            backend:
+              service:
+                name: query-srv
+                port:
+                  number: 4002
+          - path: /post/?(.*)/comment_create
+            pathType: Exact
+            backend:
+              service:
+                name: comments-srv
+                port:
+                  number: 4001
+          - path: /?(.*)
+            pathType: Exact
+            backend:
+              service:
+                name: client-srv
+                port:
+                  number: 3000
 
 
+```
+
+DAKLE JA SAM GORE DODAO POSLEDNJI PATH, KAO STO MOZES GORE VIDETI
+
+BITNO JE RECI DA JE ORDER OVIH GORNJIH PATH-OVA VAZAN:
+
+**ORDER IDE OD GREATEST IMPORTANCE DO LESS ONES**
+
+KADA SE AHTEVA PATH, KOJI JE :  `/` + `NESTO`
+
+**PRVO CE SE MATCH-OVATI DA LI JE TO NESTO `/create`; AKO TO NIJE ONDA CE SE TRAZITI MATCH ZA `/posts`; AKO TO NIJE, TRAZICE SE MATCHING ZA `/post/?(.*)/comment_create`; I TEK AKO TO NIJE BICE MATCHED `/ + 'BILO STA'`, ILI OBJASNJENO REGEXPOM TO JE ?(.*)** 
+
+
+****
 
 
 ***
