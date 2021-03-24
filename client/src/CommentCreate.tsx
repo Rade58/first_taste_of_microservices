@@ -5,8 +5,10 @@ const CommentCreate: FC<{ postId: string }> = ({ postId }) => {
   const [content, setContent] = useState<string>("");
 
   const createNewCommentForPost = useCallback(async () => {
+    /* const res = await axios.post(
+      `http://localhost:4001/posts/${postId}/comments`, */
     const res = await axios.post(
-      `http://localhost:4001/posts/${postId}/comments`,
+      `http://myblog.com/post/${postId}/comment_create`,
       { content },
       {
         headers: {
